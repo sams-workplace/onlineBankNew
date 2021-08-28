@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: LoanStatus
+  labels:
+    app: LoanStatus
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: LoanStatus

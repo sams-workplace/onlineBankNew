@@ -1,0 +1,39 @@
+server:
+  port: 8087
+ 
+---
+
+spring:
+#  profiles: 
+#    active: dev
+  application:
+    name: kakaotak
+  jpa:
+    database-platform: com.springboot.sqlite.SQLDialect
+    hibernate:
+      ddl-auto: update  # 기존 자료 유지는 update 신규 생성은 create
+  datasource:
+    url: jdbc:sqlite:sqlitesample.db 
+    driver-class-name: org.sqlite.JDBC
+    username: admin 
+    password: admin
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: kakaotalk
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+mybatis:
+  mapper-locations: classpath*:com/example/**/*Mapper.xml
+
+logging:
+  level:
+    "[org.hibernate.type]": trace
+    "[org.springframework.cloud]": debug
+

@@ -1,0 +1,82 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: BankRequest
+          uri: http://localhost:8081
+          predicates:
+            - Path=/requests/** 
+        - id: BankAuthentication
+          uri: http://localhost:8082
+          predicates:
+            - Path=/auths/** 
+        - id: BankAccount
+          uri: http://localhost:8083
+          predicates:
+            - Path=/accounts/** 
+        - id: BankAccountHistory
+          uri: http://localhost:8084
+          predicates:
+            - Path=/histories/** 
+        - id: MyPage
+          uri: http://localhost:8085
+          predicates:
+            - Path=/mypages/** 
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: BankRequest
+          uri: http://request:8080
+          predicates:
+            - Path=/requests/** 
+        - id: BankAuthentication
+          uri: http://auth:8080
+          predicates:
+            - Path=/auths/** 
+        - id: BankAccount
+          uri: http://account:8080
+          predicates:
+            - Path=/accounts/** 
+        - id: BankAccountHistory
+          uri: http://history:8080
+          predicates:
+            - Path=/histories/** 
+        - id: MyPage
+          uri: http://mypages:8080
+          predicates:
+            - Path=/mypages/** 
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080

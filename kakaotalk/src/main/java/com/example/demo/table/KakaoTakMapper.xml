@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.table.KakaoDAO">
+    <select id="selectmsg"  resultType="com.example.demo.table.SendMsgVO">
+    <![CDATA[
+        select id, phone, message from send_msg order by 1 desc LIMIT 5
+    ]]>
+    </select>
+    
+    <insert id="insertmsg" parameterType="com.example.demo.table.SendMsgVO" >
+    <![CDATA[
+    	INSERT INTO send_msg VALUES 
+		( (select max(id)+1 from send_msg) , 
+		#{phone} , #{message}  )
+	]]>
+	</insert>
+</mapper>
