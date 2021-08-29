@@ -1,4 +1,5 @@
 package onlinebanknew;
+import java.util.Date;
 
 public class MessegeSent extends AbstractEvent {
 
@@ -10,6 +11,7 @@ public class MessegeSent extends AbstractEvent {
     private Date procDate;
     private String loanStatus;
     private Long amountOfMoney;
+    private String userMobile;
 
     public MessegeSent(){
         super();
@@ -70,5 +72,12 @@ public class MessegeSent extends AbstractEvent {
 
     public void setAmountOfMoney(Long amountOfMoney) {
         this.amountOfMoney = amountOfMoney;
+    }
+    public String getUserMobile() {
+        return userMobile;
+    }
+
+    public void setUserMobile(String userMobile) {
+        this.userMobile = userMobile;
     }
 }

@@ -1,4 +1,5 @@
 package onlinebanknew;
+import java.util.Date;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,7 +11,7 @@ public class LoanStatus {
         @Id
         @GeneratedValue(strategy=GenerationType.AUTO)
         private Long id;
-        private String loanRequestId;
+        private Long loanRequestId;
         private String requestId;
         private String requestName;
         private String requestDate;
@@ -28,11 +29,11 @@ public class LoanStatus {
         public void setId(Long id) {
             this.id = id;
         }
-        public String getLoanRequestId() {
+        public Long getLoanRequestId() {
             return loanRequestId;
         }
 
-        public void setLoanRequestId(String loanRequestId) {
+        public void setLoanRequestId(Long loanRequestId) {
             this.loanRequestId = loanRequestId;
         }
         public String getRequestId() {

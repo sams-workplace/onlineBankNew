@@ -1,13 +1,15 @@
 package onlinebanknew;
 
 import javax.persistence.*;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
+//import java.util.List;
 import java.util.Date;
 
 @Entity
 @Table(name="LoanManager_table")
 public class LoanManager {
+//    @Autowired LoanManagerRepository loanManagerRepository;
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -25,42 +27,45 @@ public class LoanManager {
     private Long amountOfMoney;
     private String loanStatus;
     private Long loanRequestId;
+    private String admComment;
 
     @PostPersist
     public void onPostPersist(){
       
-        LoanRequestRecieved loanRequestRecieved = new LoanRequestRecieved();
-        BeanUtils.copyProperties(this, loanRequestRecieved);
-        loanRequestRecieved.publishAfterCommit();
+        // 대출신청
+        if( "01".equals( getRequestId() ) || "02".equals( getRequestId() ) ){
+            // 01 : 대출신청
+            // 02 : 대출상환신청
+            LoanRequestRecieved loanRequestRecieved = new LoanRequestRecieved();
+            BeanUtils.copyProperties(this, loanRequestRecieved);
+            loanRequestRecieved.publishAfterCommit();
+        }
+    }
 
-        // RequestSearched requestSearched = new RequestSearched();
-        // BeanUtils.copyProperties(this, requestSearched);
-        // requestSearched.publishAfterCommit();
+    @PostUpdate
+    public void onPostUpdate(){
 
-        // onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
-        // // mappings goes here
-        // LoanManagerApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
-
-        // LoanJudged loanJudged = new LoanJudged();
-        // BeanUtils.copyProperties(this, loanJudged);
-        // loanJudged.publishAfterCommit();
-
-        // ExcecuteLoanRequested excecuteLoanRequested = new ExcecuteLoanRequested();
-        // BeanUtils.copyProperties(this, excecuteLoanRequested);
-        // excecuteLoanRequested.publishAfterCommit();
-
-        // onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
-        // // mappings goes here
-        // LoanManagerApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
-
-        // RepayLoanRequested repayLoanRequested = new RepayLoanRequested();
-        // BeanUtils.copyProperties(this, repayLoanRequested);
-        // repayLoanRequested.publishAfterCommit();
-
-        // onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
-        // // mappings goes here
-        // LoanManagerApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
-
+        // 대출심사
+        if( "01".equals( getLoanStatus() ) || "02".equals( getLoanStatus() ) || "03".equals( getLoanStatus() ) ){
+            // 01. 심사진행
+            // 02. 대출가능
+            // 03. 대출불가
+            LoanJudged loanJudged = new LoanJudged();
+            BeanUtils.copyProperties(this, loanJudged);
+            loanJudged.publishAfterCommit();
+        }
+        // 대출실행
+        if( "04".equals( getLoanStatus() ) ){
+            ExcecuteLoanRequested excecuteLoanRequested = new ExcecuteLoanRequested();
+            BeanUtils.copyProperties(this, excecuteLoanRequested);
+            excecuteLoanRequested.publishAfterCommit();
+        }
+        // 대출상환
+        if( "05".equals( getLoanStatus() ) ){
+            RepayLoanRequested repayLoanRequested = new RepayLoanRequested();
+            BeanUtils.copyProperties(this, repayLoanRequested);
+            repayLoanRequested.publishAfterCommit();
+        }
     }
 
     public Long getId() {
@@ -162,4 +167,11 @@ public class LoanManager {
         this.loanRequestId = loanRequestId;
     }
 
+    public String getAdmComment() {
+        return this.admComment;
+    }
+
+    public void setAdmComment(String admComment) {
+        this.admComment = admComment;
+    }
 }

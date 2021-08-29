@@ -44,13 +44,14 @@ public class LoanAuth {
         }else{
             AuthCertified authCertified = new AuthCertified();
             BeanUtils.copyProperties(this, authCertified);
+            authCertified.publish();
 
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                @Override
-                public void beforeCommit(boolean readOnly) {
-                    authCertified.publish();
-                }
-            });
+            // TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            //     @Override
+            //     public void beforeCommit(boolean readOnly) {
+            //         authCertified.publish();
+            //     }
+            // });
         }
         
 		//try {

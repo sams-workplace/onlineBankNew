@@ -10,13 +10,14 @@ public class RepayLoanRequested extends AbstractEvent {
     private String procId;
     private String procName;
     private Date procDate;
-    private String usrId;
-    private String usrName;
-    private String usrPassword;
+    private String userId;
+    private String userName;
+    private String userPassword;
     private String userMobile;
     private Long amountOfMoney;
     private String loanStatus;
     private Long loanRequestId;
+    private String admComment;
 
     public RepayLoanRequested(){
         super();
@@ -71,26 +72,26 @@ public class RepayLoanRequested extends AbstractEvent {
     public void setProcDate(Date procDate) {
         this.procDate = procDate;
     }
-    public String getUsrId() {
-        return usrId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsrId(String usrId) {
-        this.usrId = usrId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
-    public String getUsrName() {
-        return usrName;
-    }
-
-    public void setUsrName(String usrName) {
-        this.usrName = usrName;
-    }
-    public String getUsrPassword() {
-        return usrPassword;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsrPassword(String usrPassword) {
-        this.usrPassword = usrPassword;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
     public String getUserMobile() {
         return userMobile;
@@ -119,5 +120,12 @@ public class RepayLoanRequested extends AbstractEvent {
 
     public void setLoanRequestId(Long loanRequestId) {
         this.loanRequestId = loanRequestId;
+    }
+    public String getAdmComment() {
+        return this.admComment;
+    }
+
+    public void setAdmComment(String admComment) {
+        this.admComment = admComment;
     }
 }

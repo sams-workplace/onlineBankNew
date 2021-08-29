@@ -2,7 +2,7 @@ package onlinebanknew;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
+//import java.util.List;
 import java.util.Date;
 
 @Entity
@@ -12,13 +12,13 @@ public class LoanMessenger {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private Long requestId;
-    private String requestName;
     private String userId;
     private String userName;
     private Date procDate;
     private String loanStatus;
     private Long amountOfMoney;
+    private String userMobile;
+    private String text;
 
     @PostPersist
     public void onPostPersist(){
@@ -34,20 +34,6 @@ public class LoanMessenger {
 
     public void setId(Long id) {
         this.id = id;
-    }
-    public Long getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(Long requestId) {
-        this.requestId = requestId;
-    }
-    public String getRequestName() {
-        return requestName;
-    }
-
-    public void setRequestName(String requestName) {
-        this.requestName = requestName;
     }
     public String getUserId() {
         return userId;
@@ -84,8 +70,21 @@ public class LoanMessenger {
     public void setAmountOfMoney(Long amountOfMoney) {
         this.amountOfMoney = amountOfMoney;
     }
+    public String getUserMobile() {
+        return userMobile;
+    }
 
+    public void setUserMobile(String userMobile) {
+        this.userMobile = userMobile;
+    }
 
+    public String getText() {
+        return this.text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
 
 }

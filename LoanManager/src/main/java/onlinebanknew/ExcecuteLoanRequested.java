@@ -17,6 +17,7 @@ public class ExcecuteLoanRequested extends AbstractEvent {
     private Long amountOfMoney;
     private String loanStatus;
     private Long loanRequestId;
+    private String admComment;
 
     public ExcecuteLoanRequested(){
         super();
@@ -119,5 +120,12 @@ public class ExcecuteLoanRequested extends AbstractEvent {
 
     public void setLoanRequestId(Long loanRequestId) {
         this.loanRequestId = loanRequestId;
+    }
+    public String getAdmComment() {
+        return this.admComment;
+    }
+
+    public void setAdmComment(String admComment) {
+        this.admComment = admComment;
     }
 }

@@ -28,7 +28,7 @@ public class PolicyHandler{
         loanRequest.setUserPassword(authCancelled.getUserPassword());
         loanRequest.setUserMobile(authCancelled.getUserMobile());
         loanRequest.setAmountOfMoney(authCancelled.getAmountOfMoney());
-        loanRequest.setRequestStatus("Authentication Failed");
+        loanRequest.setRequestStatus("인증실패");
         loanRequest.setLoanRequestId(authCancelled.getLoanRequestId());
         loanRequestRepository.save(loanRequest);
 
@@ -48,11 +48,10 @@ public class PolicyHandler{
         loanRequest.setUserPassword(loanRequestRecieved.getUserPassword());
         loanRequest.setUserMobile(loanRequestRecieved.getUserMobile());
         loanRequest.setAmountOfMoney(loanRequestRecieved.getAmountOfMoney());
-        loanRequest.setRequestStatus("Request Completed");
+        loanRequest.setRequestStatus("요청완료");
         loanRequest.setLoanRequestId(loanRequestRecieved.getLoanRequestId());
         loanRequestRepository.save(loanRequest);
     }
-
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString){}
