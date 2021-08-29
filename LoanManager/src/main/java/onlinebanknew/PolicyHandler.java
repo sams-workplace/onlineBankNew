@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.BeanUtils;
+//import org.springframework.beans.BeanUtils;
 
 @Service
 public class PolicyHandler{
