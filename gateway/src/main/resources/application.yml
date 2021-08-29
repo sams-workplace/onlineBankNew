@@ -5,6 +5,11 @@ server:
 
 spring:
   profiles: default
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8090/.well-known/jwks.json
   cloud:
     gateway:
       routes:
@@ -28,6 +33,14 @@ spring:
           uri: http://localhost:8085
           predicates:
             - Path=/mypages/** 
+        - id: LoanRequest
+          uri: http://localhost:8290
+          predicates:
+            - Path=/loanRequests/** 
+        - id: LoanAuthentication
+          uri: http://localhost:8291
+          predicates:
+            - Path=/loanAuthentications/** 
       globalcors:
         corsConfigurations:
           '[/**]':

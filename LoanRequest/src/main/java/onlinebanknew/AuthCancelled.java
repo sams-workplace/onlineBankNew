@@ -1,4 +1,6 @@
 package onlinebanknew;
+import java.util.Date;
+
 
 public class AuthCancelled extends AbstractEvent {
 

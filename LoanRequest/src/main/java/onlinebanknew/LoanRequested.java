@@ -1,4 +1,5 @@
 package onlinebanknew;
+import java.util.Date;
 
 public class LoanRequested extends AbstractEvent {
 

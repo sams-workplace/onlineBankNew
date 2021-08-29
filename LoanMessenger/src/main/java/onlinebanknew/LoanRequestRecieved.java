@@ -1,17 +1,18 @@
 package onlinebanknew;
+import java.util.Date;
 
 public class LoanRequestRecieved extends AbstractEvent {
 
     private Long id;
     private String requestId;
     private String requestName;
-    private String requestDate;
+    private Date requestDate;
     private String procId;
     private String procName;
     private Date procDate;
-    private String usrId;
-    private String usrName;
-    private String usrPassword;
+    private String userId;
+    private String userName;
+    private String userPassword;
     private String userMobile;
     private Long amountOfMoney;
     private String loanStatus;
@@ -38,11 +39,11 @@ public class LoanRequestRecieved extends AbstractEvent {
     public void setRequestName(String requestName) {
         this.requestName = requestName;
     }
-    public String getRequestDate() {
+    public Date getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(String requestDate) {
+    public void setRequestDate(Date requestDate) {
         this.requestDate = requestDate;
     }
     public String getProcId() {
@@ -66,26 +67,26 @@ public class LoanRequestRecieved extends AbstractEvent {
     public void setProcDate(Date procDate) {
         this.procDate = procDate;
     }
-    public String getUsrId() {
-        return usrId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsrId(String usrId) {
-        this.usrId = usrId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
-    public String getUsrName() {
-        return usrName;
-    }
-
-    public void setUsrName(String usrName) {
-        this.usrName = usrName;
-    }
-    public String getUsrPassword() {
-        return usrPassword;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsrPassword(String usrPassword) {
-        this.usrPassword = usrPassword;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
     public String getUserMobile() {
         return userMobile;

@@ -2,7 +2,6 @@ package onlinebanknew;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
 import java.util.Date;
 
 @Entity
@@ -18,37 +17,29 @@ public class LoanRequest {
     private String userId;
     private String userName;
     private String userPassword;
-    private String userMoblie;
+    private String userMobile;
     private Long amountOfMoney;
     private String requestStatus;
     private Long loanRequestId;
 
     @PostPersist
     public void onPostPersist(){
-        LoanRequested loanRequested = new LoanRequested();
-        BeanUtils.copyProperties(this, loanRequested);
-        loanRequested.publishAfterCommit();
 
-        //Following code causes dependency to external APIs
-        // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
+        if( "01".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
+        }
 
-        onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
-        // mappings goes here
-        Application.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class)
-            .requestAuth(loanAuth);
-
-        RepayRequested repayRequested = new RepayRequested();
-        BeanUtils.copyProperties(this, repayRequested);
-        repayRequested.publishAfterCommit();
-
-        //Following code causes dependency to external APIs
-        // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-
-        onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
-        // mappings goes here
-        Application.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class)
-            .requestAuth(loanAuth);
-
+        else if( "02".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
+        }
     }
 
     public Long getId() {
@@ -100,12 +91,12 @@ public class LoanRequest {
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
     }
-    public String getUserMoblie() {
-        return userMoblie;
+    public String getUserMobile() {
+        return userMobile;
     }
 
-    public void setUserMoblie(String userMoblie) {
-        this.userMoblie = userMoblie;
+    public void setUserMobile(String userMobile) {
+        this.userMobile = userMobile;
     }
     public Long getAmountOfMoney() {
         return amountOfMoney;
