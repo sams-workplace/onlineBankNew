@@ -52,17 +52,7 @@
 
 ![image](https://user-images.githubusercontent.com/87048587/131338978-1dc09ea4-f7fe-4e82-8391-7a4a0bf43ba0.png)
 
-비기능적 요구사항 coverage 체크
-① 업무 요청이 성공한 경우 요청 상태를 업데이트한다 (Correlation)
-② 개인정보 인증 대상 업무를 선택한 경우 인증 실패 시 서비스 이용이 불가하다 (Sync)
-③ 관리자 업무는 24시간 처리 가능하다. (event-driven 방식 Async 호출)
-④ 대출신청 / 대출 조회 서비스가 과중되는 경우 일정시간 경과 후 처리 가능하도록 유도한다. (Circuit breaker )
-⑤ 고객이 대출 업무 진행상태를 계속 확인할 수 있어야 한다. (CQRS)
-![image](https://user-images.githubusercontent.com/87048587/131339354-6a42a8df-49b2-45b8-9964-2fcedda8b6d5.png)
-
-
 ![image](https://user-images.githubusercontent.com/87048587/131339271-cbf3b54d-f1ce-428b-97d3-a4ae8078cf2a.png)
-
 
 ## 구현
 
