@@ -303,7 +303,7 @@ public interface LoanAuthService {
 대출신청, 대출상환신청, 대출심사, 대출실행, 대출상환 총 5개의 이벤트가 발생하면 LoanStatus 서비스에
 처리내역을 Insert 한다. 
 
-1. 카프카로 송출된(Publish) 위 5가지 이벤트를 수신(subscribe) 후 서비스를 처리한다.
+카프카로 송출된(Publish) 위 5가지 이벤트를 수신(subscribe) 후 서비스를 처리한다.
 
 #### LoanStatusViewHandler.java
 
