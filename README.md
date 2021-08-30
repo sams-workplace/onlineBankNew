@@ -298,6 +298,54 @@ public interface LoanAuthService {
 ```
 *****
 
+### CQRS 
+
+대출신청, 대출상환신청, 대출심사, 대출실행, 대출상환 총 5개의 이벤트가 발생하면 LoanStatus 서비스에
+처리내역을 Insert 한다. 
+
+1. 카프카로 송출된(Publish) 위 5가지 이벤트를 수신(subscribe) 후 서비스를 처리한다.
+
+#### LoanStatusViewHandler.java
+
+```
+    ...
+    // 대출심사
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenLoanJudged_then_CREATE_2 (@Payload LoanJudged loanJudged) {
+        try {
+
+            if (!loanJudged.validate()) return;
+
+            String loanStatusName = "";
+            if( "01".equals(loanJudged.getLoanStatus() ) ){
+                loanStatusName = "심사진행";
+            }
+            else if( "02".equals(loanJudged.getLoanStatus() ) ){
+                loanStatusName = "대출가능";
+            }
+            else if( "03".equals(loanJudged.getLoanStatus() ) ){
+                loanStatusName = "대출불가";
+            }
+            
+            LoanStatus loanStatus = new LoanStatus();
+            loanStatus.setLoanRequestId(loanJudged.getLoanRequestId());
+            loanStatus.setRequestId(loanJudged.getRequestId());
+            loanStatus.setRequestName(loanJudged.getRequestName());
+            loanStatus.setProcId(loanJudged.getProcId());
+            loanStatus.setProcName(loanJudged.getProcName());
+            loanStatus.setProcDate(new Date());
+            loanStatus.setLoanStatus(loanStatusName);
+            loanStatus.setAmountOfMoney(loanJudged.getAmountOfMoney());
+            loanStatus.setRequestDate(loanJudged.getRequestDate());
+            loanStatusRepository.save(loanStatus);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    ...
+```
+
 ## 운영
 *****
 
