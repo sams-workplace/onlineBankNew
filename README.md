@@ -32,25 +32,28 @@
 
 ![image](https://user-images.githubusercontent.com/87048587/131328237-b44498d0-d4cc-4bf0-9fbf-1af78627c631.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130163779-d249160e-aee1-4cad-8a2b-4c6365d54eba.png)
+![image](https://user-images.githubusercontent.com/87048587/131338375-af21a798-a081-4d84-8d8a-316b85df35a2.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130163801-55cb9ee1-0c9b-45e6-a721-60da2a2bdc2a.png)
+![image](https://user-images.githubusercontent.com/87048587/131338416-77971fdb-9239-4edc-b372-bee9571db9f8.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130163815-2ec94016-126e-4ea9-a2ce-c6054385336a.png)
+![image](https://user-images.githubusercontent.com/87048587/131338454-abcae784-26e6-4c20-a88d-da1668b419ff.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130163823-a8f74f4a-2f5f-416d-a3a4-7c9afee15f44.png)
+![image](https://user-images.githubusercontent.com/87048587/131338488-0dafe033-76d4-4beb-962d-b2ac2affa529.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130163838-eac8aefb-9cd7-46c0-b2d1-761a32d3282f.png)
+![image](https://user-images.githubusercontent.com/87048587/131338524-7bb278a4-c0d7-4ae4-93d4-79e73dc7fdcc.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130164013-25e67228-ab6e-4a3e-97ad-26301a3e088d.png)
+![image](https://user-images.githubusercontent.com/87048587/131338573-ed694a03-4518-4b86-9331-32c0c4d9cc89.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130164024-cf068293-6f9e-4205-83ed-ff0271d39a25.png)
+![image](https://user-images.githubusercontent.com/87048587/131338624-c9be6c6a-1540-4252-9524-da867fd6fd76.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130164068-a85c1014-a762-4d2d-b017-30c10cd4335f.png)
+![image](https://user-images.githubusercontent.com/87048587/131338662-b4674cea-f94d-44fc-8bd3-778429fa8ad4.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130178299-14fd56d2-ae8b-47be-b328-740637772e23.png)
+![image](https://user-images.githubusercontent.com/87048587/131338925-3a78322b-42ea-4777-87b8-0be2dc19fcc6.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130164096-53c0a44f-cef9-48a2-8ddc-256e66396a0e.png)
+![image](https://user-images.githubusercontent.com/87048587/131338978-1dc09ea4-f7fe-4e82-8391-7a4a0bf43ba0.png)
+
+![image](https://user-images.githubusercontent.com/87048587/131339077-89662a1b-07ea-4146-82f0-87f7131ad4ba.png)
+
 비기능적 요구사항 coverage 체크
 1. 업무 요청이 실패한 경우 요청 내역을 삭제한다 (Correlation)
 2. 개인정보 인증 대상 업무를 선택한 경우 인증 실패 시 서비스 이용이 불가하다 (Sync)
