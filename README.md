@@ -28,9 +28,9 @@
 *****
 
 ## 분석/설계
-![image](https://user-images.githubusercontent.com/27180840/130163209-8c3d6c43-6bd1-44c8-aef7-3cf6d2cfa832.png)
+![image](https://user-images.githubusercontent.com/87048587/131328109-f7fe4774-4c72-415c-b6e6-af186a90031e.png)
 
-![image](https://user-images.githubusercontent.com/27180840/130163166-d6f39ea8-dc75-4764-be19-3c537b6a9df9.png)
+![image](https://user-images.githubusercontent.com/87048587/131328237-b44498d0-d4cc-4bf0-9fbf-1af78627c631.png)
 
 ![image](https://user-images.githubusercontent.com/27180840/130163779-d249160e-aee1-4cad-8a2b-4c6365d54eba.png)
 
