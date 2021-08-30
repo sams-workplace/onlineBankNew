@@ -185,7 +185,7 @@ http http://request:8080/requests/1
 
 ### 동기식 호출 (구현)
 
-분석단계에서의 조건 중 하나로 요청(request)->인증(auth) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 
+분석단계에서의 조건 중 하나로 요청(Loanrequest)->인증(LoanAuthentication) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 
 
 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 
 
@@ -196,10 +196,10 @@ http http://request:8080/requests/1
 #### AuthService.java
 
 ```
-@FeignClient(name="auths", url="http://auth:8080")
-public interface AuthService {
-    @RequestMapping(method= RequestMethod.GET, path="/auths")
-    public void requestAuth(@RequestBody Auth auth);
+@FeignClient(name="LoanAuthentication", url="http://localhost:8291")
+public interface LoanAuthService {
+    @RequestMapping(method= RequestMethod.GET, path="/loanAuths")
+    public void requestAuth(@RequestBody LoanAuth loanAuth);
 
 }
 ```
@@ -209,39 +209,23 @@ public interface AuthService {
 #### Request.java
 
 ```
-@PostPersist
+    @PostPersist
     public void onPostPersist(){
 
-        // requestId
-        // "01" : Deposit
-        // "02" : Withdraw
-        // "03" : Balance
-        // "04" : Transaction  
-        // "05" : addAccount
-        // "06" : deleteAccount
-        if( "01".equals( getRequestId() ) || // Deposit
-            "02".equals( getRequestId() ) || // Withdraw
-            "05".equals( getRequestId() ) || // addAccount
-            "06".equals( getRequestId() ) ){ // deleteAccount 
-            onlinebank.external.Auth auth = new onlinebank.external.Auth();
-            BeanUtils.copyProperties(this, auth);
-            auth.setBankRequestId( getId() );
-            BankRequestApplication.applicationContext.getBean(onlinebank.external.AuthService.class).requestAuth(auth);
-        }
-        
-        // Balance
-        if( "03".equals( getRequestId() ) ){ 
-            BalanceRequested balanceRequested = new BalanceRequested();
-            BeanUtils.copyProperties(this, balanceRequested);
-            balanceRequested.setBankRequestId( getId() );
-            balanceRequested.publish();
+        if( "01".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
         }
 
-        // Transaction
-        if( "04".equals( getRequestId() ) ){ 
-            TransactionRequested transactionRequested = new TransactionRequested();
-            BeanUtils.copyProperties(this, transactionRequested);
-            transactionRequested.publishAfterCommit();
+        else if( "02".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
         }
     }
 ```
@@ -249,106 +233,68 @@ public interface AuthService {
 
 ### 비동기식 호출 
 
-인증성공 후 계좌 시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 
+인증성공 후 대출 관리시스템으로 데이터를 전송할 경우 동기식이 아니라 비동기식으로 처리하여 
 
-계좌 처리를 위하여 인증 기능이 블로킹 되지 않아도록 처리한다.
+인증 기능이 블로킹 되지 않도록 처리한다.
 
 1. 이를 위하여 인증이력에 기록을 남긴 후에 곧바로 인증완료 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
 
-#### Auth.java
+#### LoanAuth.java
 
 ```
-package onlinebank;
+    @PostPersist
+    public void onPostPersist(){
 
-@Entity
-@Table(name="Auth_table")
-public class Auth {
+        String chkUserId = "1@sk.com";
+        String chkUserName = "유은상";
+        String chkUserPassword = "1234";
+        Boolean loginFlag = false;
 
-    @PrePersist
-    public void onPrePersist(){
+        if( userId.equals( chkUserId ) && userName.equals( chkUserName ) && userPassword.equals( chkUserPassword ) ){
+            loginFlag = true;
+        } 
 
-        String userId = "1@sk.com";
-        String userName = "sam";
-        String userPassword = "1234";
-        boolean authResult = false ;
-
-        if( userId.equals( getUserId() ) && userName.equals( getUserName() ) && userPassword.equals( getUserPassword() ) ){
-            authResult = true ;
-        }
-
-        if( authResult == false ){
+        if( loginFlag == false ){
             AuthCancelled authCancelled = new AuthCancelled();
             BeanUtils.copyProperties(this, authCancelled);
-	    // 실패 이벤트 카프카 송출
             authCancelled.publish();
-
+            
         }else{
             AuthCertified authCertified = new AuthCertified();
             BeanUtils.copyProperties(this, authCertified);
-
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                @Override
-                public void beforeCommit(boolean readOnly) {
-		    // 성공 이벤트 카프카 송출
-                    authCertified.publish();
-                }
-            });
+            authCertified.publish();
         }
     }
 ```
 
-2. 계좌 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다
+2. 대출 관리 시스템에서는 인증 승인 이벤트를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다
 
 #### PolicyHandler.java
 
 ```
-package onlinebank;
-
-@Service
-public class PolicyHandler{
-    @Autowired AccountRepository accountRepository;
-
-    // 인증 성공시 정책 수신
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverAuthCertified_RecieveAccountRequest(@Payload AuthCertified authCertified){
+    public void wheneverAuthCertified_RecieveLoanRequest(@Payload AuthCertified authCertified){
 
         if(!authCertified.validate()) return;
-        
-        // 입금처리
-        if( "01".equals( authCertified.getRequestId() ) ){
+        System.out.println("\n\n##### listener RecieveLoanRequest : " + authCertified.toJson() + "\n\n");
 
-           // 입금계좌가 없을 경우 
-           if( accountRepository.findByAccountNo( authCertified.getAccountNo() ) == null ){
- 
-               AccountRequestCancelled accountRequestCancelled = new AccountRequestCancelled();              
-               accountRequestCancelled.setAccountNo(authCertified.getAccountNo());
-               accountRequestCancelled.setBankRequestId(authCertified.getBankRequestId());
-               accountRequestCancelled.setMessage("Account Not Exist");
-               accountRequestCancelled.setRequestId(authCertified.getRequestId());
-               accountRequestCancelled.setRequestName(authCertified.getRequestName());
-               accountRequestCancelled.setRequestMoney(authCertified.getAmountOfMoney());
-               accountRequestCancelled.setRequestDate(new Date());
-               
-               accountRequestCancelled.publish();
-           }
-           // 입금계좌가 있을 경우
-           else{
+        LoanManager loanManager = new LoanManager();
 
-               Account account = accountRepository.findByAccountNo( authCertified.getAccountNo() );
-               account.setAccountNo(authCertified.getAccountNo());
-               account.setRequestId(authCertified.getRequestId());
-               account.setRequestName(authCertified.getRequestName());
-               account.setRequestMoney(authCertified.getAmountOfMoney());
-               account.setAmountOfMoney(account.getAmountOfMoney() + authCertified.getAmountOfMoney() );
-               account.setRequestDate(new Date());
-               accountRepository.save(account);
-           }
-        }
+        loanManager.setId(authCertified.getLoanRequestId());
+        loanManager.setRequestId(authCertified.getRequestId());
+        loanManager.setRequestName(authCertified.getRequestName());
+        loanManager.setRequestDate(authCertified.getRequestDate());
+        loanManager.setUserId(authCertified.getUserId());
+        loanManager.setUserName(authCertified.getUserName());
+        loanManager.setUserPassword(authCertified.getUserPassword());
+        loanManager.setUserMobile(authCertified.getUserMobile());
+        loanManager.setAmountOfMoney(authCertified.getAmountOfMoney());
+        loanManager.setLoanRequestId(authCertified.getLoanRequestId());
 
-        ...
-
+        loanManagerRepository.save(loanManager);
     }
-}
+    ...
+    
 ```
 *****
 
