@@ -57,22 +57,22 @@
 ## 구현
 
 분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 
-구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (서비스 포트는 8081, 8082, 8083, 8084, 8084, 8088 이다)
+구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (서비스 포트는 8290, 8291, 8292, 8293, 8294, 8295 이다)
 
 ```
-cd BankRequest
+cd LoanRequest
 mvn spring-boot:run
 
-cd BankAuthentication
+cd LoanAuthentication
 mvn spring-boot:run
 
-cd BankAccount
+cd LoanManager
 mvn spring-boot:run
 
-cd BankHistory
+cd LoanMessenger
 mvn spring-boot:run
 
-cd Mypage
+cd LoanStatus
 mvn spring-boot:run
 
 cd gateway
