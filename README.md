@@ -52,15 +52,16 @@
 
 ![image](https://user-images.githubusercontent.com/87048587/131338978-1dc09ea4-f7fe-4e82-8391-7a4a0bf43ba0.png)
 
-![image](https://user-images.githubusercontent.com/87048587/131339077-89662a1b-07ea-4146-82f0-87f7131ad4ba.png)
-
 비기능적 요구사항 coverage 체크
-1. 업무 요청이 실패한 경우 요청 내역을 삭제한다 (Correlation)
-2. 개인정보 인증 대상 업무를 선택한 경우 인증 실패 시 서비스 이용이 불가하다 (Sync)
-3. 잔액 조회, 거래내역 조회 서비스는 24시간 이용이 가능하다 (Async 호출-event-driven)
-4. 입/출금, 계좌 개설/폐쇄 서비스가 과중되면 잠시 후에 하도록 유도한다. (Circuit breaker, fallback)
-5. 고객이 최종 거래 내역, 계좌 상태를 계속 확인 가능해야 한다 (CQRS)
-![image](https://user-images.githubusercontent.com/27180840/130178255-bb142282-4eb6-4487-b6b0-ffab6e990f28.png)
+① 업무 요청이 성공한 경우 요청 상태를 업데이트한다 (Correlation)
+② 개인정보 인증 대상 업무를 선택한 경우 인증 실패 시 서비스 이용이 불가하다 (Sync)
+③ 관리자 업무는 24시간 처리 가능하다. (event-driven 방식 Async 호출)
+④ 대출신청 / 대출 조회 서비스가 과중되는 경우 일정시간 경과 후 처리 가능하도록 유도한다. (Circuit breaker )
+⑤ 고객이 대출 업무 진행상태를 계속 확인할 수 있어야 한다. (CQRS)
+![image](https://user-images.githubusercontent.com/87048587/131339354-6a42a8df-49b2-45b8-9964-2fcedda8b6d5.png)
+
+
+![image](https://user-images.githubusercontent.com/87048587/131339271-cbf3b54d-f1ce-428b-97d3-a4ae8078cf2a.png)
 
 
 ## 구현
