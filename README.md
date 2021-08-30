@@ -84,33 +84,54 @@ mvn spring-boot:run
 ### DDD의 적용
 
 1. 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다. 
-(예시는 request 마이크로 서비스 )
+(예시는 LoanRequest 마이크로 서비스 )
 
-#### Request.java
+#### LoanRequest.java
 
 ```
-package onlinebank;
+package onlinebanknew;
 
 import javax.persistence.*;
 import org.springframework.beans.BeanUtils;
-import java.util.List;
 import java.util.Date;
 
 @Entity
-@Table(name="Request_table")
-public class Request {
+@Table(name="LoanRequest_table")
+public class LoanRequest {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    private String accountNo;
     private String requestId;
     private String requestName;
     private Date requestDate;
-    private Integer amountOfMoney;
     private String userId;
     private String userName;
     private String userPassword;
+    private String userMobile;
+    private Long amountOfMoney;
+    private String requestStatus;
+    private Long loanRequestId;
+
+    @PostPersist
+    public void onPostPersist(){
+
+        if( "01".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
+        }
+
+        else if( "02".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
+        }
+    }
 
     public Long getId() {
         return id;
@@ -119,14 +140,13 @@ public class Request {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getAccountNo() {
-        return accountNo;
+    public String getRequestId() {
+        return requestId;
     }
 
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
-    
     ...
 ```
 
