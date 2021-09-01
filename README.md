@@ -348,10 +348,17 @@ public interface LoanAuthService {
 #### 테스트 시나리오
 
 1. 고객이 대출 시스템에서 신규 대출 신청을 한다.   
-
+   ```
+   http http://loanRequest:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+   ```
    - 메세지 전송내역 확인
-
+   ```
+   http http://loanMessenger:8080/loanMessengers
+   ```
    - 대출 진행상태 확인
+   ```
+   http http://loanStatus:8080/loanStatus
+   ```
 
 2. 신청 정보에 대해 인증 시스템에서 개인정보를 인증한다. 
 
@@ -378,6 +385,10 @@ public interface LoanAuthService {
    - 대출 진행상태 확인
 
 6. 대출 담당자가 대출을 실행한다. 
+
+   - 메세지 전송내역 확인
+
+   - 대출 진행상태 확인
 
 7. 고객이 대출 실행 여부를 최종 확인한다. 
 
