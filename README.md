@@ -361,34 +361,44 @@ public interface LoanAuthService {
    ```
 
 2. 신청 정보에 대해 인증 시스템에서 개인정보를 인증한다. 
-
-   - 메세지 전송내역 확인
-
-   - 대출 진행상태 확인
+   ```
+   http http://loanAuth:8080/loanAuths
+   ```
 
 3. 대출 담당자가 신청정보를 확인한다.
 
-   - 메세지 전송내역 확인
-
-   - 대출 진행상태 확인
  
 4. 대출 담당자가 신청건에 대해 심사를 시작한다. 
 
    - 메세지 전송내역 확인
-
+   ```
+   http http://loanMessenger:8080/loanMessengers
+   ```
    - 대출 진행상태 확인
+   ```
+   http http://loanStatus:8080/loanStatus
+   ```
 
-5. 대출 담당자가 신청건에 대해 심사를 완료한다. 
+5. 대출 담당자가 신청건에 대해 심사 완료 후 심사결과를 전송한다. 
 
    - 메세지 전송내역 확인
-
+   ```
+   http http://loanMessenger:8080/loanMessengers
+   ```
    - 대출 진행상태 확인
+   ```
+   http http://loanStatus:8080/loanStatus
+   ```
 
 6. 대출 담당자가 대출을 실행한다. 
-
    - 메세지 전송내역 확인
-
+   ```
+   http http://loanMessenger:8080/loanMessengers
+   ```
    - 대출 진행상태 확인
+   ```
+   http http://loanStatus:8080/loanStatus
+   ```
 
 7. 고객이 대출 실행 여부를 최종 확인한다. 
 
@@ -420,7 +430,7 @@ hystrix:
 
 4. 인증 서비스의 임의 부하 처리 
 
-#### Auth.java (Entity)
+#### LoanAuth.java (Entity)
 
 ```
     @PrePersist
@@ -524,7 +534,8 @@ horizontalpodautoscaler.autoscaling/request autoscaled
 
 #### 부하 테스트 진행
 
-root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/requests POST {"accountNo":"1111","requestId":"01","requestName":"Deposit","amountOfMoney":10000,"userId":"1@sk.com","userName":"sam","userPassword":"1234"}'
+root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/LoanRequests POST 
+{"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
 ```
@@ -603,7 +614,8 @@ siege                             1/1     Running   0          3h19m
 
 #### 무정지 재배포 여부를 확인을 위해서 Autoscaler 와 CB 설정을 제거한다.
 
-root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/requests POST {"accountNo":"1111","requestId":"01","requestName":"Deposit","amountOfMoney":10000,"userId":"1@sk.com","userName":"sam","userPassword":"1234"}'
+root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/requests POST 
+{"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
 #### 부하테스트중 추가 생성한 Terminal 에서 readiness 설정되지 않은 버젼으로 재배포 한다.
@@ -669,7 +681,8 @@ Shortest transaction:           0.02
 
 #### 부하테스트 진행
 
-root@siege:/# siege -v -c100 -t30S -r10 --content-type "application/json" 'http://request:8080/requests POST {"accountNo":"1111","requestId":"01","requestName":"Deposit","amountOfMoney":10000,"userId":"1@sk.com","userName":"sam","userPassword":"1234"}'
+root@siege:/# siege -v -c100 -t30S -r10 --content-type "application/json" 'http://request:8080/requests POST  
+{"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
 #### 부하테스트중 추가 생성한 Terminal 에서 readiness 설정 되어있는 버젼으로 재배포 한다.
@@ -718,7 +731,7 @@ Shortest transaction:           0.00
 #### Gateway 기능이 정상적으로 수행되는지 확인하기 위하여 Gateway를 통하여 요청서비스를 호출한다.  
 
 ```
-root@siege:/# http gateway:8080/requests accountNo="1111" requestId="01" requestName="Deposit" amountOfMoney=10000 userId="1@sk.com" userName="sam" userPassword="1234"
+root@siege:/# http gateway:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
 
 HTTP/1.1 201 Created
 Content-Type: application/json;charset=UTF-8
@@ -748,16 +761,14 @@ transfer-encoding: chunked
 
 #### 요청 처리결과를 통하여 Gateway 기능이 정상적으로 수행되었음을 확인할 수 있다. 
 
-#### 요청이 정상적으로 처리되지 않는 경우( 예를 들어서 입금 요청을 했으나 계좌가 존재하지 않는 등 )
+#### 개인정보 인증이 실패한 경우
 
-요청시 파라미터로 전송된 id 값을 기준으로 기 저장된 요청 데이터를 삭제한다. 
+요청시 파라미터로 전송된 id 값을 기준으로 기 저장된 요청 데이터내 처리상태 필드를 업데이트 한다.  
 
-Gateway 테스트시 존재하지 않는 계좌에 입금을 시도하였으며 요청이 정상적으로 처리되지 못한 관계로
-
-기 저장된 데이터가 삭제 처리 된다. 
-
+패스워드를 오입력 하여 인증실패 처리한다. 
 ```
-root@siege:/# http http://request:8080/requests
+http http://loanRequests:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="12345" amountOfMoney="100000"
+
 
 HTTP/1.1 200 
 Content-Type: application/hal+json;charset=UTF-8
@@ -785,7 +796,7 @@ Transfer-Encoding: chunked
     }
 }
 ```
-#### request 데이터가 정상적으로 삭제되었음을 확인할 수 있다. 
+#### request 데이터가 정상적으로 업데이트 되었음을 확인할 수 있다. 
 *****
 
 ### 동기식 호출 (운영)
