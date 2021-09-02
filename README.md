@@ -993,11 +993,11 @@ hystrix:
 
 5. 부하테스터 seige 툴을 통한 서킷 브레이커 동작 확인
 
+```
 root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/loanRequests POST 
 {"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
-```
 HTTP/1.1 500     2.79 secs:     254 bytes ==> POST http://request:8080/loanRequests
 HTTP/1.1 500     2.79 secs:     254 bytes ==> POST http://request:8080/loanRequests
 HTTP/1.1 500     2.62 secs:     254 bytes ==> POST http://request:8080/loanRequests
@@ -1082,39 +1082,38 @@ horizontalpodautoscaler.autoscaling/request autoscaled
 
 #### 부하 테스트 진행
 
+```
 root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/loanRequests POST 
 {"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
-```
-HTTP/1.1 201     0.19 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.22 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.47 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.21 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.07 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.05 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.21 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.06 secs:     457 bytes ==> POST http://request:8080/loanRequests
-HTTP/1.1 201     0.07 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.31 secs:     453 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.08 secs:     453 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.03 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.08 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.19 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.19 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.78 secs:     453 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.49 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     1.00 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.69 secs:     453 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.40 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.70 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.22 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.49 secs:     453 bytes ==> POST http://request:8080/loanRequests
 
 Lifting the server siege...
-Transactions:                  21890 hits
+Transactions:                   5035 hits
 Availability:                 100.00 %
-Elapsed time:                  89.43 secs
-Data transferred:               9.52 MB
-Response time:                  0.41 secs
-Transaction rate:             244.77 trans/sec
-Throughput:                     0.11 MB/sec
-Concurrency:                   99.49
-Successful transactions:       21890
+Elapsed time:                  89.92 secs
+Data transferred:               2.21 MB
+Response time:                  0.67 secs
+Transaction rate:              55.99 trans/sec
+Throughput:                     0.02 MB/sec
+Concurrency:                   37.62
+Successful transactions:        5113
 Failed transactions:               0
-Longest transaction:            4.35
+Longest transaction:            8.70
 Shortest transaction:           0.01
 ```
 
@@ -1123,36 +1122,36 @@ Shortest transaction:           0.01
 #### 부하 테스트 진행전 
 
 ```
-Every 2.0s: kubectl get pod                                                                                                                 labs--1458334666: Thu Sep  2 07:38:50 2021
+Every 2.0s: kubectl get pod                                                                                    labs--1458334666: Thu Sep  2 10:15:56 2021
 
 NAME                         READY   STATUS    RESTARTS   AGE
-auth-76575bb66d-c286z        1/1     Running   0          18m 
-gateway-867596b974-75dxj     1/1     Running   0          167m
-manager-57f779bd4f-pn92k     1/1     Running   0          167m
-messenger-689ff46b85-svwlb   1/1     Running   0          167m
-request-69dfc9fc7f-sr4x8     1/1     Running   0          2m9s
-siege                        1/1     Running   0          5h9m
-status-5cd9db6d56-pzj5j      1/1     Running   0          167m
+auth-76575bb66d-c286z        1/1     Running   0          175m
+gateway-867596b974-75dxj     1/1     Running   0          5h24m
+manager-57f779bd4f-pn92k     1/1     Running   0          5h24m
+messenger-689ff46b85-svwlb   1/1     Running   0          5h24m
+request-7bb665d5bf-snvll     1/1     Running   0          29m  
+siege                        1/1     Running   0          7h46m   
+status-5cd9db6d56-pzj5j      1/1     Running   0          5h24m
+
 ```
 
 #### 부하 테스트 진행 후 
 
 ```
-Every 2.0s: kubectl get pod       labs-579721623: Thu Aug 19 08:46:34 2021
+Every 2.0s: kubectl get pod                                                                                    labs--1458334666: Thu Sep  2 10:25:15 2021
 
-NAME                              READY   STATUS    RESTARTS   AGE
-account-6b844c4f44-gdsvd          1/1     Running   0          147m
-auth-7c55b8b7b9-9r6bb             1/1     Running   0          147m
-efs-provisioner-fbcc88cb8-zrlzx   1/1     Running   0          81m
-gateway-55bd75dfb9-cwlvg          1/1     Running   0          144m
-history-77cc54b895-v5nqm          1/1     Running   0          146m
-mypage-7bc648bd4d-5psgz           1/1     Running   0          144m
-request-675f455d5c-256tz          0/1     Running   0          31s
-request-675f455d5c-6s2nz          0/1     Running   0          46s
-request-675f455d5c-7txbc          1/1     Running   0          30m
-request-675f455d5c-bz4nq          0/1     Running   0          46s
-request-675f455d5c-mdbbl          0/1     Running   0          46s
-siege                             1/1     Running   0          3h19m
+NAME                         READY   STATUS             RESTARTS   AGE
+auth-76575bb66d-c286z        1/1     Running            0          3h4m
+gateway-867596b974-75dxj     1/1     Running            0          5h33m
+manager-57f779bd4f-pn92k     1/1     Running            0          5h33m
+messenger-689ff46b85-svwlb   1/1     Running            0          5h33m
+request-7bb665d5bf-5tbcr     1/1     Running            0          6m26s
+request-7bb665d5bf-7rnhk     1/1     Running            0          6m10s
+request-7bb665d5bf-snvll     1/1     Running            0          38m
+request-7bb665d5bf-snvzf     1/1     Running            0          6m10s
+request-7bb665d5bf-ztmz6     1/1     Running            0          5m56s
+siege                        1/1     Running            0          7h55m
+status-5cd9db6d56-pzj5j      1/1     Running            0          5h33m
 ```
 
 #### 부하테스트 결과 Availability 는 100% 를 보이며 성공하였고, 늘어난 pod 개수를 통하여
