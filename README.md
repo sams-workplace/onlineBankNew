@@ -1698,43 +1698,54 @@ spec:
             failureThreshold: 5
 ```
 
-#### Liveness Prove 설정 정상 적용여부를 확인하기 위해서 기존에 생성된 request pod 삭제시
-
-정상적으로 재생성 되는지 여부를 확인한다. 
+#### Liveness Prove 설정 정상 적용여부를 확인하기 위해서 livenessProbe Port 를 강제로 변경한다.
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl get pod
-NAME                              READY   STATUS    RESTARTS   AGE
-account-6b844c4f44-gdsvd          1/1     Running   0          84m
-auth-7c55b8b7b9-9r6bb             1/1     Running   0          85m
-efs-provisioner-fbcc88cb8-zrlzx   1/1     Running   0          19m
-gateway-55bd75dfb9-cwlvg          1/1     Running   0          82m
-history-77cc54b895-v5nqm          1/1     Running   0          84m
-mypage-7bc648bd4d-5psgz           1/1     Running   0          82m
-request-675f455d5c-t8lzd          1/1     Running   0          2m10s
-siege                             1/1     Running   0          137m
+  livenessProbe:
+    httpGet:
+      path: '/actuator/health'
+      port: 8081
+    initialDelaySeconds: 30
+    timeoutSeconds: 2
+    periodSeconds: 5
+    failureThreshold: 5
+    
+  root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl apply -f loanRequest-deploy-vol.yaml
+deployment.apps/request created
 ```
 
-#### request pod 를 삭제한다. 
+#### request pod 를 조회한다.
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl delete pod request-675f455d5c-t8lzd
-pod "request-675f455d5c-t8lzd" deleted
+Every 2.0s: kubectl get pod                                                                         labs--1458334666: Thu Sep  2 15:37:46 2021
+
+NAME                               READY   STATUS    RESTARTS   AGE
+auth-76575bb66d-4tb9h              1/1     Running   0          132m
+efs-provisioner-67d7fbb46f-ghrf6   1/1     Running   0          59m
+gateway-867596b974-nzljp           1/1     Running   0          140m
+manager-57f779bd4f-75dsb           1/1     Running   0          132m
+messenger-689ff46b85-svwlb         1/1     Running   0          10h
+request-75c6688b7d-q4hxf           0/1     Running   1          95s
+siege                              1/1     Running   0          13h
+status-5cd9db6d56-pzj5j            1/1     Running   0          10h
 ```
 
-#### request pod 삭제 후 pod 정보를 재조회 한다. 
+#### 잠시뒤 request pod 정보를 재조회 한다. 
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl get pod
-NAME                              READY   STATUS    RESTARTS   AGE
-account-6b844c4f44-gdsvd          1/1     Running   0          85m
-auth-7c55b8b7b9-9r6bb             1/1     Running   0          85m
-efs-provisioner-fbcc88cb8-zrlzx   1/1     Running   0          19m
-gateway-55bd75dfb9-cwlvg          1/1     Running   0          83m
-history-77cc54b895-v5nqm          1/1     Running   0          85m
-mypage-7bc648bd4d-5psgz           1/1     Running   0          83m
-request-675f455d5c-zqhwq          0/1     Running   0          13s
-siege                             1/1     Running   0          138m
+Every 2.0s: kubectl get pod                                                                         labs--1458334666: Thu Sep  2 15:40:44 2021
+
+NAME                               READY   STATUS    RESTARTS   AGE
+auth-76575bb66d-4tb9h              1/1     Running   0          135m
+efs-provisioner-67d7fbb46f-ghrf6   1/1     Running   0          62m
+gateway-867596b974-nzljp           1/1     Running   0          143m
+manager-57f779bd4f-75dsb           1/1     Running   0          135m
+messenger-689ff46b85-svwlb         1/1     Running   0          10h
+request-75c6688b7d-q4hxf           0/1     Running   5          4m33s
+siege                              1/1     Running   0          13h
+status-5cd9db6d56-pzj5j            1/1     Running   0          10h
+
+
 ```
 
-#### request pod Liveness Prove 설정이 적용되어 삭제 후 다른 이름으로 재생성 되었음을 확인할 수 있다. 
+#### request pod Liveness Prove 설정이 적용되어 RESTARTS 횟수가 설정대로 5회로 증가한 것을 확인할 수 있다. 
