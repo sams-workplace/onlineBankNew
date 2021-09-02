@@ -349,7 +349,7 @@ public interface LoanAuthService {
 
 1. 고객이 대출 시스템에서 신규 대출 신청을 한다.   
    ```
-        root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+        root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234"  amountOfMoney="100000"
 	HTTP/1.1 201 
 	Content-Type: application/json;charset=UTF-8
 	Date: Thu, 02 Sep 2021 05:40:14 GMT
@@ -544,7 +544,7 @@ public interface LoanAuthService {
    ```
  
 4. 대출 담당자가 신청건에 대해 심사를 시작한다. 
-   . loanStatus 필드가 "01" 으로 심사진행중임을 확인
+   - loanStatus 필드가 "01" 으로 심사진행중임을 확인
    ```
 	root@siege:/# http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="01" admComment=""
 	HTTP/1.1 200 
