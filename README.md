@@ -1670,7 +1670,7 @@ onlinebanknew.LoanRequest@1199766eroot@request-5c5469f649-wnqwm
 
 #### request 서비스 배포시 yaml 파일내 Liveness Prove 설정을 추가한다. 
 
-#### request-deploy.yaml
+#### loanRequest-deploy-vol.yaml
 
 ```
 spec:
@@ -1685,11 +1685,26 @@ spec:
     spec:
       containers:
         - name: request
-          image: 879772956301.dkr.ecr.ap-northeast-2.amazonaws.com/request
+          image: 052937454741.dkr.ecr.ap-northeast-1.amazonaws.com/loan-request
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-...
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
+          volumeMounts:
+            - mountPath: "/mnt/aws"
+              name: volume
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
           livenessProbe:
             httpGet:
               path: '/actuator/health'
@@ -1698,6 +1713,9 @@ spec:
             timeoutSeconds: 2
             periodSeconds: 5
             failureThreshold: 5
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
 ```
 
 #### Liveness Prove 설정 정상 적용여부를 확인하기 위해서 livenessProbe Port 를 강제로 변경한다.
