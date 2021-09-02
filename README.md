@@ -349,7 +349,7 @@ public interface LoanAuthService {
 
 1. 고객이 대출 시스템에서 신규 대출 신청을 한다.   
    ```
-        root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234"  amountOfMoney="100000"
+   root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234"  amountOfMoney="100000"
 	HTTP/1.1 201 
 	Content-Type: application/json;charset=UTF-8
 	Date: Thu, 02 Sep 2021 05:40:14 GMT
@@ -642,7 +642,7 @@ public interface LoanAuthService {
    ```
 
 5. 대출 담당자가 신청건에 대해 심사 완료 후 심사결과를 전송한다. 
-   . loanStatus 필드가 "02" 으로 심사신청 완료되었음을 확인
+   - loanStatus 필드가 "02" 으로 심사신청 완료되었음을 확인
    ```
 	root@siege:/# http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="02" admComment=""
 	HTTP/1.1 200 
@@ -750,7 +750,7 @@ public interface LoanAuthService {
    ```
 
 6. 대출 담당자가 대출을 실행한다. 
-   . loanStatus 필드가 "04" 로 대출 실행되었음을 확인
+   - loanStatus 필드가 "04" 로 대출 실행되었음을 확인
    ```
 	root@siege:/# http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="04" amountOfMoney="1000000" admComment=""
 	HTTP/1.1 200 
@@ -847,7 +847,103 @@ public interface LoanAuthService {
 
 7. 고객이 대출 실행 여부를 최종 확인한다. 
    ```
-   http http://status:8080/loanStatus
+	root@siege:/# http http://status:8080/loanStatus
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:17:34 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanStatus": [
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/1"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/1"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"loanStatus": null,
+			"procDate": "2021-09-02T05:40:14.678+0000",
+			"procId": null,
+			"procName": null,
+			"requestDate": "1630561213526",
+			"requestId": "01",
+			"requestName": "대출신청"
+		    },
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/2"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/2"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"loanStatus": "심사진행",
+			"procDate": "2021-09-02T05:54:57.527+0000",
+			"procId": "adm@sk.com",
+			"procName": "관리자",
+			"requestDate": "1630561213526",
+			"requestId": "01",
+			"requestName": "대출신청"
+		    },
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/4"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/4"
+			    }
+			},
+			"amountOfMoney": 1000000,
+			"loanRequestId": 1,
+			"loanStatus": "대출가능",
+			"procDate": "2021-09-02T06:06:39.078+0000",
+			"procId": "adm@sk.com",
+			"procName": "관리자",
+			"requestDate": "1630561213526",
+			"requestId": "01",
+			"requestName": "대출신청"
+		    },
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/5"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/5"
+			    }
+			},
+			"amountOfMoney": 1000000,
+			"loanRequestId": 1,
+			"loanStatus": "대출실행",
+			"procDate": "2021-09-02T06:09:53.698+0000",
+			"procId": "adm@sk.com",
+			"procName": "관리자",
+			"requestDate": null,
+			"requestId": "01",
+			"requestName": "대출신청"
+		    }
+		]
+	    },
+	    "_links": {
+		"profile": {
+		    "href": "http://status:8080/profile/loanStatus"
+		},
+		"self": {
+		    "href": "http://status:8080/loanStatus"
+		}
+	    }
+	}
+
    ```
 
 ## 운영
@@ -897,69 +993,73 @@ hystrix:
 
 5. 부하테스터 seige 툴을 통한 서킷 브레이커 동작 확인
 
-root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/requests POST {"accountNo":"1111","requestId":"01","requestName":"Deposit","amountOfMoney":10000,"userId":"1@sk.com","userName":"sam","userPassword":"1234"}'
+root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/loanRequests POST 
+{"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
 ```
-HTTP/1.1 500     4.46 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.88 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.69 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.88 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.85 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.60 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.76 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     4.09 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.62 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     4.14 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     3.59 secs:     250 bytes ==> POST http://request:8080/requests
+HTTP/1.1 500     2.79 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.79 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.62 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.80 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.81 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.81 secs:     254 bytes ==> POST http://request:8080/loanRequests
 
-HTTP/1.1 201     4.40 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.33 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.45 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.35 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.38 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.45 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.51 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.57 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.02 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.63 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.05 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.03 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.01 secs:     370 bytes ==> POST http://request:8080/requests
+HTTP/1.1 201     2.85 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.86 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.92 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.94 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.98 secs:     455 bytes ==> POST http://request:8080/loanRequests
 
-HTTP/1.1 500     4.31 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     4.14 secs:     250 bytes ==> POST http://request:8080/requests
+HTTP/1.1 500     3.07 secs:     254 bytes ==> POST http://request:8080/loanRequests
 
-HTTP/1.1 201     4.09 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.15 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.14 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.10 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.15 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.24 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.20 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.24 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.26 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.16 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.30 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.20 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.24 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.29 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 500     4.32 secs:     250 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     4.18 secs:     370 bytes ==> POST http://request:8080/requests
+HTTP/1.1 201     3.08 secs:     455 bytes ==> POST http://request:8080/loanRequests
 
-Lifting the server siege...
-Transactions:                   1545 hits
-Availability:                  71.40 %
-Elapsed time:                  89.88 secs
-Data transferred:               0.69 MB
-Response time:                  5.66 secs
-Transaction rate:              17.19 trans/sec
-Throughput:                     0.01 MB/sec
-Concurrency:                   97.34
-Successful transactions:        1545
-Failed transactions:             619
-Longest transaction:           11.60
-Shortest transaction:           0.01
+HTTP/1.1 500     2.31 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.28 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.26 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.26 secs:     254 bytes ==> POST http://request:8080/loanRequests
+
+HTTP/1.1 201     3.09 secs:     455 bytes ==> POST http://request:8080/loanRequests
+
+HTTP/1.1 500     1.68 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.68 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.81 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.69 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.80 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     3.33 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.88 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.04 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.72 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.79 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     1.79 secs:     254 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 500     2.07 secs:     254 bytes ==> POST http://request:8080/loanRequests
+
+HTTP/1.1 201     3.22 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.81 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.70 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.79 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     3.01 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.79 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.77 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.46 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     2.81 secs:     455 bytes ==> POST http://request:8080/loanRequests
+
+siege aborted due to excessive socket failure; you
+can change the failure threshold in $HOME/.siegerc
+
+Transactions:                   1213 hits
+Availability:                  52.72 %
+Elapsed time:                  31.50 secs
+Data transferred:               0.79 MB
+Response time:                  2.51 secs
+Transaction rate:              38.51 trans/sec
+Throughput:                     0.03 MB/sec
+Concurrency:                   96.69
+Successful transactions:        1213
+Failed transactions:            1088
+Longest transaction:            9.18
+Shortest transaction:           0.02
 ```
 운영시스템은 죽지 않고 지속적으로 CB 에 의하여 적절히 회로가 열림과 닫힘이 벌어지면서 자원을 보호하고 있음을 보여줌. 
 동적 Scale out (replica의 자동적 추가,HPA) 을 통하여 시스템을 확장 해주는 후속처리가 필요.
