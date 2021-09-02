@@ -349,7 +349,7 @@ public interface LoanAuthService {
 
 1. 고객이 대출 시스템에서 신규 대출 신청을 한다.   
    ```
-   http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+        root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
 	HTTP/1.1 201 
 	Content-Type: application/json;charset=UTF-8
 	Date: Thu, 02 Sep 2021 05:40:14 GMT
@@ -377,64 +377,472 @@ public interface LoanAuthService {
 	    "userPassword": "1234"
 	}
    ```
+   - 신청 후 신청정보 확인( loanRequestId, requestDate, requestStatus 상태 업데이트 여부 확인 )
+   ``` 
+	root@siege:/# http http://request:8080/loanRequests
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:45:59 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanRequests": [
+		    {
+			"_links": {
+			    "loanRequest": {
+				"href": "http://request:8080/loanRequests/1"
+			    },
+			    "self": {
+				"href": "http://request:8080/loanRequests/1"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"requestDate": "2021-09-02T05:40:13.526+0000",
+			"requestId": "01",
+			"requestName": "대출신청",
+			"requestStatus": "요청완료",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상",
+			"userPassword": "1234"
+		    }
+   ```
    - 메세지 전송내역 확인
    ```
-   http http://messenger:8080/loanMessengers
+	root@siege:/# http http://messenger:8080/loanMessengers
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:48:15 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanMessengers": [
+		    {
+			"_links": {
+			    "loanMessenger": {
+				"href": "http://messenger:8080/loanMessengers/1"
+			    },
+			    "self": {
+				"href": "http://messenger:8080/loanMessengers/1"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanStatus": "대출신청",
+			"procDate": "2021-09-02T05:40:14.696+0000",
+			"text": "유은상(1@sk.com)님 대출신청 완료 하였습니다.",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상"
+		    }
+		]
    ```
    - 대출 진행상태 확인
    ```
-   http http://status:8080/loanStatus
+	root@siege:/# http http://status:8080/loanStatus
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:48:55 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanStatus": [
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/1"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/1"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"loanStatus": null,
+			"procDate": "2021-09-02T05:40:14.678+0000",
+			"procId": null,
+			"procName": null,
+			"requestDate": "1630561213526",
+			"requestId": "01",
+			"requestName": "대출신청"
+		    }
+		]
    ```
 
 2. 신청 정보에 대해 인증 시스템에서 개인정보를 인증한다. 
    ```
-   http http://auth:8080/loanAuths
+	root@siege:/# http http://auth:8080/loanAuths
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:52:27 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanAuths": [
+		    {
+			"_links": {
+			    "loanAuth": {
+				"href": "http://auth:8080/loanAuths/1"
+			    },
+			    "self": {
+				"href": "http://auth:8080/loanAuths/1"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"requestDate": "2021-09-02T05:40:13.526+0000",
+			"requestId": "01",
+			"requestName": "대출신청",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상",
+			"userPassword": "1234"
+		    }
+		]
    ```
 
 3. 대출 담당자가 신청정보를 확인한다.
    ```
-   http http://manager:8080/loanManagers
+	root@siege:/# http http://manager:8080/loanManagers
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:53:10 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanManagers": [
+		    {
+			"_links": {
+			    "loanManager": {
+				"href": "http://manager:8080/loanManagers/1"
+			    },
+			    "self": {
+				"href": "http://manager:8080/loanManagers/1"
+			    }
+			},
+			"admComment": null,
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"loanStatus": null,
+			"procDate": null,
+			"procId": null,
+			"procName": null,
+			"requestDate": "2021-09-02T05:40:13.526+0000",
+			"requestId": "01",
+			"requestName": "대출신청",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상",
+			"userPassword": "1234"
+		    }
+		]
    ```
  
 4. 대출 담당자가 신청건에 대해 심사를 시작한다. 
+   . loanStatus 필드가 "01" 으로 심사진행중임을 확인
    ```
-   http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="01" admComment=""
+	root@siege:/# http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="01" admComment=""
+	HTTP/1.1 200 
+	Content-Type: application/json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:54:57 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_links": {
+		"loanManager": {
+		    "href": "http://manager:8080/loanManagers/1"
+		},
+		"self": {
+		    "href": "http://manager:8080/loanManagers/1"
+		}
+	    },
+	    "admComment": "",
+	    "amountOfMoney": 100000,
+	    "loanRequestId": 1,
+	    "loanStatus": "01",
+	    "procDate": null,
+	    "procId": "adm@sk.com",
+	    "procName": "관리자",
+	    "requestDate": "2021-09-02T05:40:13.526+0000",
+	    "requestId": "01",
+	    "requestName": "대출신청",
+	    "userId": "1@sk.com",
+	    "userMobile": "010-000-0000",
+	    "userName": "유은상",
+	    "userPassword": "1234"
+	}
    ```
 
    - 메세지 전송내역 확인
    ```
-   http http://messenger:8080/loanMessengers
+	root@siege:/# http http://messenger:8080/loanMessengers
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:55:54 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanMessengers": [
+		    {
+			"_links": {
+			    "loanMessenger": {
+				"href": "http://messenger:8080/loanMessengers/2"
+			    },
+			    "self": {
+				"href": "http://messenger:8080/loanMessengers/2"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanStatus": "심사진행",
+			"procDate": "2021-09-02T05:54:57.534+0000",
+			"text": "유은상(1@sk.com)님은 심사진행 상태입니다. ",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상"
+		    }
+		]
    ```
    - 대출 진행상태 확인
    ```
-   http http://status:8080/loanStatus
+	root@siege:/# http http://status:8080/loanStatus
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 05:56:55 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanStatus": [
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/2"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/2"
+			    }
+			},
+			"amountOfMoney": 100000,
+			"loanRequestId": 1,
+			"loanStatus": "심사진행",
+			"procDate": "2021-09-02T05:54:57.527+0000",
+			"procId": "adm@sk.com",
+			"procName": "관리자",
+			"requestDate": "1630561213526",
+			"requestId": "01",
+			"requestName": "대출신청"
+		    }
+		]
    ```
 
 5. 대출 담당자가 신청건에 대해 심사 완료 후 심사결과를 전송한다. 
+   . loanStatus 필드가 "02" 으로 심사신청 완료되었음을 확인
    ```
-   http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="02" admComment=""
+	root@siege:/# http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="02" admComment=""
+	HTTP/1.1 200 
+	Content-Type: application/json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:06:39 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_links": {
+		"loanManager": {
+		    "href": "http://manager:8080/loanManagers/1"
+		},
+		"self": {
+		    "href": "http://manager:8080/loanManagers/1"
+		}
+	    },
+	    "admComment": "",
+	    "amountOfMoney": 1000000,
+	    "loanRequestId": 1,
+	    "loanStatus": "02",
+	    "procDate": null,
+	    "procId": "adm@sk.com",
+	    "procName": "관리자",
+	    "requestDate": "2021-09-02T05:40:13.526+0000",
+	    "requestId": "01",
+	    "requestName": "대출신청",
+	    "userId": "1@sk.com",
+	    "userMobile": "010-000-0000",
+	    "userName": "유은상",
+	    "userPassword": "1234"
+	}
    ```
 
    - 메세지 전송내역 확인
    ```
-   http http://messenger:8080/loanMessengers
+	root@siege:/# http http://messenger:8080/loanMessengers
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:07:25 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanMessengers": [
+		    {
+			"_links": {
+			    "loanMessenger": {
+				"href": "http://messenger:8080/loanMessengers/4"
+			    },
+			    "self": {
+				"href": "http://messenger:8080/loanMessengers/4"
+			    }
+			},
+			"amountOfMoney": 1000000,
+			"loanStatus": "대출가능",
+			"procDate": "2021-09-02T06:06:39.096+0000",
+			"text": "유은상(1@sk.com)님은 대출가능 상태입니다. ",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상"
+		    }
+		]
    ```
    - 대출 진행상태 확인
    ```
-   http http://status:8080/loanStatus
+	root@siege:/# http http://status:8080/loanStatus
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:09:02 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanStatus": [
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/4"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/4"
+			    }
+			},
+			"amountOfMoney": 1000000,
+			"loanRequestId": 1,
+			"loanStatus": "대출가능",
+			"procDate": "2021-09-02T06:06:39.078+0000",
+			"procId": "adm@sk.com",
+			"procName": "관리자",
+			"requestDate": "1630561213526",
+			"requestId": "01",
+			"requestName": "대출신청"
+		    }
+		]
+	    },
+	    "_links": {
+		"profile": {
+		    "href": "http://status:8080/profile/loanStatus"
+		},
+		"self": {
+		    "href": "http://status:8080/loanStatus"
+		}
+	    }
+	}
    ```
 
 6. 대출 담당자가 대출을 실행한다. 
+   . loanStatus 필드가 "04" 로 대출 실행되었음을 확인
    ```
-   http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="04" amountOfMoney="1000000" admComment=""
+	root@siege:/# http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="04" amountOfMoney="1000000" admComment=""
+	HTTP/1.1 200 
+	Content-Type: application/json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:09:53 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_links": {
+		"loanManager": {
+		    "href": "http://manager:8080/loanManagers/1"
+		},
+		"self": {
+		    "href": "http://manager:8080/loanManagers/1"
+		}
+	    },
+	    "admComment": "",
+	    "amountOfMoney": 1000000,
+	    "loanRequestId": 1,
+	    "loanStatus": "04",
+	    "procDate": null,
+	    "procId": "adm@sk.com",
+	    "procName": "관리자",
+	    "requestDate": "2021-09-02T05:40:13.526+0000",
+	    "requestId": "01",
+	    "requestName": "대출신청",
+	    "userId": "1@sk.com",
+	    "userMobile": "010-000-0000",
+	    "userName": "유은상",
+	    "userPassword": "1234"
+	}
+
    ```
    - 메세지 전송내역 확인
    ```
-   http http://messenger:8080/loanMessengers
+	root@siege:/# http http://messenger:8080/loanMessengers
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:10:37 GMT
+	Transfer-Encoding: chunked
+	{
+	    "_embedded": {
+		"loanMessengers": [
+			"_links": {
+			    "loanMessenger": {
+				"href": "http://messenger:8080/loanMessengers/5"
+			    },
+			    "self": {
+				"href": "http://messenger:8080/loanMessengers/5"
+			    }
+			},
+			"amountOfMoney": 1000000,
+			"loanStatus": "대출실행",
+			"procDate": "2021-09-02T06:09:53.702+0000",
+			"text": "유은상(1@sk.com)님 1000000원 대출 되었습니다. ",
+			"userId": "1@sk.com",
+			"userMobile": "010-000-0000",
+			"userName": "유은상"
+		    }
+		]
    ```
    - 대출 진행상태 확인
    ```
-   http http://status:8080/loanStatus
+	root@siege:/# http http://status:8080/loanStatus
+	HTTP/1.1 200 
+	Content-Type: application/hal+json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 06:11:33 GMT
+	Transfer-Encoding: chunked
+
+	{
+	    "_embedded": {
+		"loanStatus": [
+		    {
+			"_links": {
+			    "loanStatus": {
+				"href": "http://status:8080/loanStatus/5"
+			    },
+			    "self": {
+				"href": "http://status:8080/loanStatus/5"
+			    }
+			},
+			"amountOfMoney": 1000000,
+			"loanRequestId": 1,
+			"loanStatus": "대출실행",
+			"procDate": "2021-09-02T06:09:53.698+0000",
+			"procId": "adm@sk.com",
+			"procName": "관리자",
+			"requestDate": null,
+			"requestId": "01",
+			"requestName": "대출신청"
+		    }
+		]
    ```
 
 7. 고객이 대출 실행 여부를 최종 확인한다. 
