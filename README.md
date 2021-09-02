@@ -1557,19 +1557,32 @@ tmpfs           1.9G     0  1.9G   0% /sys/firmware
 #### 변경된 yaml 파일로 서비스 재배포 한다. 
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl apply -f request-deploy-vol.yaml
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl apply -f loanRequest-deploy-vol.yaml
 deployment.apps/request created
 ```
 
 #### Pod 로 접속하여 파일시스템 정보를 확인한다. 
 
 ```
-root@request-675f455d5c-t8lzd:/# df -h
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl get pod
+NAME                               READY   STATUS    RESTARTS   AGE
+auth-76575bb66d-4tb9h              1/1     Running   0          94m
+efs-provisioner-67d7fbb46f-ghrf6   1/1     Running   0          21m
+gateway-867596b974-nzljp           1/1     Running   0          102m
+manager-57f779bd4f-75dsb           1/1     Running   0          94m
+messenger-689ff46b85-svwlb         1/1     Running   0          10h
+request-5c5469f649-5t846           0/1     Running   0          25s
+siege                              1/1     Running   0          12h
+status-5cd9db6d56-pzj5j            1/1     Running   0          10h
+
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl exec -it request-5c5469f649-5t846 -- /bin/bash
+
+root@request-5c5469f649-5t846:/# df -h
 Filesystem      Size  Used Avail Use% Mounted on
-overlay          80G  4.1G   76G   6% /
+overlay          80G  4.6G   76G   6% /
 tmpfs            64M     0   64M   0% /dev
 tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
-/dev/nvme0n1p1   80G  4.1G   76G   6% /mnt/aws
+/dev/nvme0n1p1   80G  4.6G   76G   6% /mnt/aws
 shm              64M     0   64M   0% /dev/shm
 tmpfs           1.9G   12K  1.9G   1% /run/secrets/kubernetes.io/serviceaccount
 tmpfs           1.9G     0  1.9G   0% /proc/acpi
@@ -1577,6 +1590,78 @@ tmpfs           1.9G     0  1.9G   0% /sys/firmware
 ```
 
 #### 생성된 Persistence Volume 이 pod 내 정상 mount 되었음을 확인할 수 있다. 
+```
+	root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+
+	HTTP/1.1 201 
+	Content-Type: application/json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 15:23:58 GMT
+	Location: http://request:8080/loanRequests/1
+	Transfer-Encoding: chunked
+
+	{
+	    "_links": {
+		"loanRequest": {
+		    "href": "http://request:8080/loanRequests/1"
+		},
+		"self": {
+		    "href": "http://request:8080/loanRequests/1"
+		}
+	    },
+	    "amountOfMoney": 100000,
+	    "loanRequestId": null,
+	    "requestDate": null,
+	    "requestId": "01",
+	    "requestName": "대출신청",
+	    "requestStatus": null,
+	    "userId": "1@sk.com",
+	    "userMobile": "010-000-0000",
+	    "userName": "유은상",
+	    "userPassword": "1234"
+	}
+```
+#### LoanRequest.java 파일내 할당된 볼륨에 로그를 기록하도록 프로그램 수정
+```
+@PostPersist
+    public void onPostPersist(){
+
+        if( "01".equals( getRequestId() ) ){
+            onlinebanknew.external.LoanAuth loanAuth = new onlinebanknew.external.LoanAuth();
+            BeanUtils.copyProperties(this, loanAuth);
+            loanAuth.setLoanRequestId( getId() );
+            loanAuth.setRequestDate( new Date() );
+            LoanRequestApplication.applicationContext.getBean(onlinebanknew.external.LoanAuthService.class).requestAuth(loanAuth);
+
+            LoanRequest loanLog = new LoanRequest(); 
+            BeanUtils.copyProperties(this, loanLog);
+
+            Date date = new Date();
+            Timestamp ts = new Timestamp(date.getTime());  
+            String dateString = "/mnt/aws/" + ts;
+            
+            try{
+            File file = new File(dateString);
+            FileWriter fw = new FileWriter(file,true);
+
+            fw.write(loanLog.toString());
+            fw.flush();
+            fw.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+```
+#### Persist Volume 내 정상 로깅됨을 확인
+```
+root@request-5c5469f649-wnqwm:/mnt/aws# ls -alrt
+total 8
+drwxr-xr-x 1 root root 17 Sep  2 15:22 ..
+-rw-r--r-- 1 root root 34 Sep  2 15:23 2021-09-02 15:23:57.164
+-rw-r--r-- 1 root root 34 Sep  2 15:27 2021-09-02 15:27:31.127
+drwxr-xr-x 2 root root 68 Sep  2 15:27 .
+root@request-5c5469f649-wnqwm:/mnt/aws# cat "2021-09-02 15:27:31.127"
+onlinebanknew.LoanRequest@1199766eroot@request-5c5469f649-wnqwm
+```
 *****
 
 ### Liveness Prove
