@@ -350,6 +350,33 @@ public interface LoanAuthService {
 1. 고객이 대출 시스템에서 신규 대출 신청을 한다.   
    ```
    http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+   
+HTTP/1.1 201 
+Content-Type: application/json;charset=UTF-8
+Date: Thu, 02 Sep 2021 05:40:14 GMT
+Location: http://request:8080/loanRequests/1
+Transfer-Encoding: chunked
+
+{
+    "_links": {
+        "loanRequest": {
+            "href": "http://request:8080/loanRequests/1"
+        },
+        "self": {
+            "href": "http://request:8080/loanRequests/1"
+        }
+    },
+    "amountOfMoney": 100000,
+    "loanRequestId": null,
+    "requestDate": null,
+    "requestId": "01",
+    "requestName": "대출신청",
+    "requestStatus": null,
+    "userId": "1@sk.com",
+    "userMobile": "010-000-0000",
+    "userName": "유은상",
+    "userPassword": "1234"
+}
    ```
    - 메세지 전송내역 확인
    ```
