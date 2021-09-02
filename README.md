@@ -1451,52 +1451,80 @@ Transfer-Encoding: chunked
 #### Persistence Volume 을 생성한다. 
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl get pv
+efs-pv.yaml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: aws-efs
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+    
+root@labs--1458334666:/home/project/onlineBank2/yaml# kubectl get pv
 
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS   REASON   AGE
-pvc-60c0deaa-241e-443d-a770-2c4890b0d9db   1Gi        RWO            Delete           Bound    kafka/datadir-my-kafka-2   gp2                     174m
-pvc-ce2fe4aa-be29-4c82-8637-7d247b243456   1Gi        RWO            Delete           Bound    kafka/datadir-my-kafka-1   gp2                     175m
-pvc-f0331c5b-0127-475f-93db-58999bb38980   1Gi        RWO            Delete           Bound    kafka/datadir-my-kafka-0   gp2                     177m
-task-pv-volume                             100Mi      RWO            Retain           Bound    labs-579721623/aws-efs     aws-efs                 4m4s
+pvc-06cef063-7441-4e78-8cfc-bdc3de9dd873   1Gi        RWO            Delete           Bound    kafka/datadir-my-kafka-0   gp2                     13h
+pvc-13dc784b-7bd4-4bcf-9391-ea5747513b44   1Gi        RWO            Delete           Bound    kafka/datadir-my-kafka-2   gp2                     12h
+pvc-17a1154a-8326-4e6c-9019-d6203f3be9e8   1Gi        RWO            Delete           Bound    kafka/datadir-my-kafka-1   gp2                     12h
+task-pv-volume                             100Mi      RWO            Retain           Bound    default/aws-efs            aws-efs                 3m18s
+
+```
+
+#### Storageclass 를 생성한다. 
+
+```
+root@labs--1458334666:/home/project/onlineBank2/yaml# kubectl get sc
+
+NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+aws-efs         my-aws.com/aws-efs      Delete          Immediate              false                  4m47s
+gp2 (default)   kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  13h
 ```
 
 #### Persistence Volume Claim 을 생성한다. 
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl get pvc
+root@labs--1458334666:/home/project/onlineBank2/yaml# kubectl get pvc
 
 NAME      STATUS   VOLUME           CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-aws-efs   Bound    task-pv-volume   100Mi      RWO            aws-efs        101s
+aws-efs   Bound    task-pv-volume   100Mi      RWO            aws-efs        3m55s
 ```
 
 #### Pod 로 접속하여 파일시스템 정보를 확인한다. 
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl get pod
+root@labs--1458334666:/home/project/onlineBank2/yaml# kubectl get pod
 
-NAME                              READY   STATUS             RESTARTS   AGE
-account-6b844c4f44-gdsvd          1/1     Running            0          76m
-auth-7c55b8b7b9-9r6bb             1/1     Running            0          76m
-efs-provisioner-fbcc88cb8-zrlzx   1/1     Running            0          10m
-gateway-55bd75dfb9-cwlvg          1/1     Running            0          73m
-history-77cc54b895-v5nqm          1/1     Running            0          75m
-mypage-7bc648bd4d-5psgz           1/1     Running            0          73m
-request-5cdc6474bf-p76tr          0/1     ImagePullBackOff   0          25m
-request-646c4cc7c6-xmk59          1/1     Running            0          28m
-siege                             1/1     Running            0          128m
+NAME                               READY   STATUS         RESTARTS   AGE
+auth-76575bb66d-4tb9h              1/1     Running        0          75m
+efs-provisioner-67d7fbb46f-ghrf6   1/1     Running        0          115s
+gateway-867596b974-nzljp           1/1     Running        0          83m
+manager-57f779bd4f-75dsb           1/1     Running        0          74m
+messenger-689ff46b85-svwlb         1/1     Running        0          9h
+request-56c65447c9-pxqnh           1/2     ErrImagePull   0          9m58s
+request-69dfc9fc7f-hcrm6           1/1     Running        0          75m
+siege                              1/1     Running        0          12h
+status-5cd9db6d56-pzj5j            1/1     Running        0          9h
 
-root@labs-579721623:/home/project/online-bank/yaml# kubectl exec -it request-646c4cc7c6-xmk59 -- /bin/bash
+root@labs--1458334666:/home/project/onlineBank2/yaml# kubectl exec -it request-69dfc9fc7f-hcrm6 -- /bin/bash
 ```
 
 #### 생성된 Persistence Volume 은 Mount 되지 않은 상태임을 확인한다. 
 
 ```
-root@request-646c4cc7c6-xmk59:/# df -h
+root@request-69dfc9fc7f-hcrm6:/# df -h
 Filesystem      Size  Used Avail Use% Mounted on
-overlay          80G  4.2G   76G   6% /
+overlay          80G  4.4G   76G   6% /
 tmpfs            64M     0   64M   0% /dev
 tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
-/dev/nvme0n1p1   80G  4.2G   76G   6% /etc/hosts
+/dev/nvme0n1p1   80G  4.4G   76G   6% /etc/hosts
 shm              64M     0   64M   0% /dev/shm
 tmpfs           1.9G   12K  1.9G   1% /run/secrets/kubernetes.io/serviceaccount
 tmpfs           1.9G     0  1.9G   0% /proc/acpi
