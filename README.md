@@ -1163,66 +1163,83 @@ status-5cd9db6d56-pzj5j      1/1     Running            0          5h33m
 
 #### 무정지 재배포 여부를 확인을 위해서 Autoscaler 와 CB 설정을 제거한다.
 
+```
 root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/requests POST 
 {"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
+```
 
 #### 부하테스트중 추가 생성한 Terminal 에서 readiness 설정되지 않은 버젼으로 재배포 한다.
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl apply -f request-redeploy.yaml
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl apply -f loanRequest-redeploy.yaml
 deployment.apps/request configured
-service/request configured
+service/request unchanged
 
+HTTP/1.1 201     0.61 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.44 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.92 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.93 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.93 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.91 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     1.30 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.77 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.63 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     3.54 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.78 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.76 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     1.12 secs:     455 bytes ==> POST http://request:8080/loanRequests
 [error] socket: unable to connect sock.c:249: Connection refused
 [error] socket: unable to connect sock.c:249: Connection refused
 [error] socket: unable to connect sock.c:249: Connection refused
 [error] socket: unable to connect sock.c:249: Connection refused
 [error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     1.00 secs:     455 bytes ==> POST http://request:8080/loanRequests
 [error] socket: unable to connect sock.c:249: Connection refused
 [error] socket: unable to connect sock.c:249: Connection refused
 [error] socket: unable to connect sock.c:249: Connection refused
-HTTP/1.1 201     0.83 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.86 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.84 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     1.50 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.94 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.91 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.94 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     1.64 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.81 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     1.43 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.88 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.93 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     1.40 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.89 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     1.42 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.94 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.85 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.85 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.90 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.93 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.80 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.92 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.94 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.94 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.97 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.97 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.91 secs:     370 bytes ==> POST http://request:8080/requests
+HTTP/1.1 201     0.53 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     0.53 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     1.02 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     1.03 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     0.70 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.71 secs:     455 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.70 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     1.66 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+HTTP/1.1 201     0.73 secs:     455 bytes ==> POST http://request:8080/loanRequests
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+[error] socket: unable to connect sock.c:249: Connection refused
+[alert] socket: select and discovered it's not ready sock.c:351: Connection timed out
+[alert] socket: read check timed out(30) sock.c:240: Connection timed out
+[alert] socket: select and discovered it's not ready sock.c:351: Connection timed out
+[alert] socket: read check timed out(30) sock.c:240: Connection timed out
+
 siege aborted due to excessive socket failure; you
 can change the failure threshold in $HOME/.siegerc
 
-Transactions:                   1154 hits
-Availability:                  51.38 %
-Elapsed time:                  12.57 secs
-Data transferred:               0.41 MB
-Response time:                  1.06 secs
-Transaction rate:              91.81 trans/sec
-Throughput:                     0.03 MB/sec
-Concurrency:                   97.58
-Successful transactions:        1154
-Failed transactions:            1092
-Longest transaction:            4.69
+Transactions:                    548 hits
+Availability:                  32.79 %
+Elapsed time:                  40.59 secs
+Data transferred:               0.24 MB
+Response time:                  1.33 secs
+Transaction rate:              13.50 trans/sec
+Throughput:                     0.01 MB/sec
+Concurrency:                   17.91
+Successful transactions:         548
+Failed transactions:            1123
+Longest transaction:            9.04
 Shortest transaction:           0.02
 ```
 
@@ -1230,46 +1247,52 @@ Shortest transaction:           0.02
 
 #### 부하테스트 진행
 
-root@siege:/# siege -v -c100 -t30S -r10 --content-type "application/json" 'http://request:8080/requests POST  
+root@siege:/# siege -v -c100 -t30S -r10 --content-type "application/json" 'http://request:8080/loanRequests POST  
 {"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
 #### 부하테스트중 추가 생성한 Terminal 에서 readiness 설정 되어있는 버젼으로 재배포 한다.
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl apply -f request-deploy.yaml
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl apply -f loanRequest-deploy.yaml
 deployment.apps/request configured
 service/request unchanged
 
-HTTP/1.1 201     0.37 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.56 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.38 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.38 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.36 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.35 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.36 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.34 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.36 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.37 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.35 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.05 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.33 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.05 secs:     372 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.08 secs:     372 bytes ==> POST http://request:8080/requests
+HTTP/1.1 201     0.30 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.37 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.30 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.14 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.39 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.15 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.46 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.46 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.04 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.14 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.19 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.35 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.15 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.19 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.15 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.47 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.21 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.31 secs:     457 bytes ==> POST http://request:8080/loanRequests
 
 Lifting the server siege...
-Transactions:                  24451 hits
+Transactions:                  11648 hits
 Availability:                 100.00 %
-Elapsed time:                  89.32 secs
-Data transferred:               8.65 MB
-Response time:                  0.36 secs
-Transaction rate:             273.75 trans/sec
-Throughput:                     0.10 MB/sec
-Concurrency:                   99.31
-Successful transactions:       24451
+Elapsed time:                  29.16 secs
+Data transferred:               5.06 MB
+Response time:                  0.25 secs
+Transaction rate:             399.45 trans/sec
+Throughput:                     0.17 MB/sec
+Concurrency:                   97.89
+Successful transactions:       11648
 Failed transactions:               0
-Longest transaction:            2.72
-Shortest transaction:           0.00
+Longest transaction:            2.44
+Shortest transaction:           0.01
 ```
 
 #### 배포중 Availability 100%를 보이며 무정지 재배포가 정상적으로 성공하였다.
@@ -1280,72 +1303,73 @@ Shortest transaction:           0.00
 #### Gateway 기능이 정상적으로 수행되는지 확인하기 위하여 Gateway를 통하여 요청서비스를 호출한다.  
 
 ```
-root@siege:/# http gateway:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+root@siege:/# http http://gateway:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
 
 HTTP/1.1 201 Created
 Content-Type: application/json;charset=UTF-8
-Date: Thu, 19 Aug 2021 06:54:01 GMT
-Location: http://request:8080/requests/2
+Date: Thu, 02 Sep 2021 13:26:22 GMT
+Location: http://request:8080/loanRequests/1
 transfer-encoding: chunked
 
 {
     "_links": {
-        "request": {
-            "href": "http://request:8080/requests/2"
+        "loanRequest": {
+            "href": "http://request:8080/loanRequests/1"
         },
         "self": {
-            "href": "http://request:8080/requests/2"
+            "href": "http://request:8080/loanRequests/1"
         }
     },
-    "accountNo": "1111",
-    "amountOfMoney": 10000,
+    "amountOfMoney": 100000,
+    "loanRequestId": null,
     "requestDate": null,
     "requestId": "01",
-    "requestName": "Deposit",
+    "requestName": "대출신청",
+    "requestStatus": null,
     "userId": "1@sk.com",
-    "userName": "sam",
+    "userMobile": "010-000-0000",
+    "userName": "유은상",
     "userPassword": "1234"
 }
 ```
 
 #### 요청 처리결과를 통하여 Gateway 기능이 정상적으로 수행되었음을 확인할 수 있다. 
 
-#### 개인정보 인증이 실패한 경우
+#### 요청이 정상적으로 접수된 경우 요청 데이터를 업데이트 한다.  
 
-요청시 파라미터로 전송된 id 값을 기준으로 기 저장된 요청 데이터내 처리상태 필드를 업데이트 한다.  
+요청시 파라미터로 전송된 id 값을 기준으로 기 저장된 요청 데이터내 처리상태( requestStatus ), 요청번호( loanRequestId ),  
+요청일자( requestDate ) 필드를 업데이트 한다.  
 
-패스워드를 오입력 하여 인증실패 처리한다. 
 ```
-http http://loanRequests:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="12345" amountOfMoney="100000"
-
+root@siege:/# http http://request:8080/loanRequests/1
 
 HTTP/1.1 200 
 Content-Type: application/hal+json;charset=UTF-8
-Date: Thu, 19 Aug 2021 06:54:56 GMT
+Date: Thu, 02 Sep 2021 13:26:39 GMT
 Transfer-Encoding: chunked
 
 {
-    "_embedded": {
-        "requests": []
-    },
     "_links": {
-        "profile": {
-            "href": "http://request:8080/profile/requests"
+        "loanRequest": {
+            "href": "http://request:8080/loanRequests/1"
         },
         "self": {
-            "href": "http://request:8080/requests{?page,size,sort}",
-            "templated": true
+            "href": "http://request:8080/loanRequests/1"
         }
     },
-    "page": {
-        "number": 0,
-        "size": 20,
-        "totalElements": 0,
-        "totalPages": 0
-    }
+    "amountOfMoney": 100000,
+    "loanRequestId": 1,
+    "requestDate": "2021-09-02T13:26:21.492+0000",
+    "requestId": "01",
+    "requestName": "대출신청",
+    "requestStatus": "요청완료",
+    "userId": "1@sk.com",
+    "userMobile": "010-000-0000",
+    "userName": "유은상",
+    "userPassword": "1234"
 }
 ```
-#### request 데이터가 정상적으로 업데이트 되었음을 확인할 수 있다. 
+#### loanRequestId, requestDate, requestStatus 데이터가 정상적으로 업데이트 되었음을 확인할 수 있다. 
 *****
 
 ### 동기식 호출 (운영)
