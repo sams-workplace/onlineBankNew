@@ -1379,68 +1379,71 @@ Transfer-Encoding: chunked
 1) 인증 서비스 임시로 삭제한다. 
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl delete service auth
+root@labs--1458334666:/home/project/onlineBank2/LoanRequest# kubectl delete service auth
 service "auth" deleted
 ```
 
 2) 요청 처리결과를 확인한다.
 
 ```
-root@siege:/# http request:8080/requests accountNo="1111" requestId="01" requestName="Deposit" amountOfMoney=10000 userId="1@sk.com" userName="sam" userPassword="1234"
+root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+
 HTTP/1.1 500 
 Connection: close
 Content-Type: application/json;charset=UTF-8
-Date: Thu, 19 Aug 2021 06:59:08 GMT
+Date: Thu, 02 Sep 2021 13:32:15 GMT
 Transfer-Encoding: chunked
 
 {
     "error": "Internal Server Error",
     "message": "Could not commit JPA transaction; nested exception is javax.persistence.RollbackException: Error while committing the transaction",
-    "path": "/requests",
+    "path": "/loanRequests",
     "status": 500,
-    "timestamp": "2021-08-19T06:59:08.624+0000"
+    "timestamp": "2021-09-02T13:32:15.213+0000"
 }
 ```
 
-3) 인증서비스 재기동 한다. 
+3) 인증서비스 다시 시작한다.
 
 ```
-root@labs-579721623:/home/project/online-bank/yaml# kubectl expose deploy auth --type="LoadBalancer" --port=8080
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest# kubectl expose deploy auth --type="LoadBalancer" --port=8080
 service/auth exposed
 ```
 
 4) 요청처리 결과를 확인한다. 
 
 ```
-root@siege:/# http http://request:8080/requests accountNo="1111" requestId="01" requestName="Deposit" amountOfMoney=10000 userId="1@sk.com" userName="sam" userPassword="1234"
+root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
 
 HTTP/1.1 201 
 Content-Type: application/json;charset=UTF-8
-Date: Thu, 19 Aug 2021 07:02:31 GMT
-Location: http://request:8080/requests/4
+Date: Thu, 02 Sep 2021 13:33:29 GMT
+Location: http://request:8080/loanRequests/3
 Transfer-Encoding: chunked
 
 {
     "_links": {
-        "request": {
-            "href": "http://request:8080/requests/4"
+        "loanRequest": {
+            "href": "http://request:8080/loanRequests/3"
         },
         "self": {
-            "href": "http://request:8080/requests/4"
+            "href": "http://request:8080/loanRequests/3"
         }
     },
-    "accountNo": "1111",
-    "amountOfMoney": 10000,
+    "amountOfMoney": 100000,
+    "loanRequestId": null,
     "requestDate": null,
     "requestId": "01",
-    "requestName": "Deposit",
+    "requestName": "대출신청",
+    "requestStatus": null,
     "userId": "1@sk.com",
-    "userName": "sam",
+    "userMobile": "010-000-0000",
+    "userName": "유은상",
     "userPassword": "1234"
 }
 ```
 
-#### 테스트를 통하여 인증 서비스가 기동되지 않은 상태에서는 업무 요청이 실패함을 확인 할 수 있음.
+#### 테스트를 통하여 인증 서비스가 기동되지 않은 상태에서는 업무 요청이 실패함을 확인 할 수 있다.
 *****
 
 ### Persistence Volume
