@@ -1076,43 +1076,45 @@ Shortest transaction:           0.02
 설정은 CPU 사용량이 50프로를 넘어서면 replica 를 10개까지 늘려준다
 
 ```
-root@labs-579721623:/home/project/online-bank/BankAuthentication# kubectl autoscale deployment request --cpu-percent=50 --min=1 --max=10
+root@labs--1458334666:/home/project/onlineBank2/yaml/LoanRequest#  kubectl autoscale deployment request --cpu-percent=50 --min=1 --max=10
 horizontalpodautoscaler.autoscaling/request autoscaled
 ```
 
 #### 부하 테스트 진행
 
-root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/LoanRequests POST 
+root@siege:/# siege -v -c100 -t90S -r10 --content-type "application/json" 'http://request:8080/loanRequests POST 
 {"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
 
 ```
-HTTP/1.1 201     1.63 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.98 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.80 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.09 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.90 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.89 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.18 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.19 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     1.71 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.10 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.80 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.81 secs:     370 bytes ==> POST http://request:8080/requests
-HTTP/1.1 201     0.82 secs:     370 bytes ==> POST http://request:8080/requests
+HTTP/1.1 201     0.19 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.22 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.47 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.20 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.21 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.07 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.05 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.21 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.06 secs:     457 bytes ==> POST http://request:8080/loanRequests
+HTTP/1.1 201     0.07 secs:     457 bytes ==> POST http://request:8080/loanRequests
 
 Lifting the server siege...
-Transactions:                   8988 hits
+Transactions:                  21890 hits
 Availability:                 100.00 %
-Elapsed time:                  89.51 secs
-Data transferred:               3.17 MB
-Response time:                  0.99 secs
-Transaction rate:             100.41 trans/sec
-Throughput:                     0.04 MB/sec
-Concurrency:                   99.42
-Successful transactions:        8989
+Elapsed time:                  89.43 secs
+Data transferred:               9.52 MB
+Response time:                  0.41 secs
+Transaction rate:             244.77 trans/sec
+Throughput:                     0.11 MB/sec
+Concurrency:                   99.49
+Successful transactions:       21890
 Failed transactions:               0
-Longest transaction:            8.59
+Longest transaction:            4.35
 Shortest transaction:           0.01
 ```
 
@@ -1121,16 +1123,16 @@ Shortest transaction:           0.01
 #### 부하 테스트 진행전 
 
 ```
-Every 2.0s: kubectl get pod       labs-579721623: Thu Aug 19 08:44:47 2021
+Every 2.0s: kubectl get pod                                                                                                                 labs--1458334666: Thu Sep  2 07:38:50 2021
 
-NAME                              READY   STATUS    RESTARTS   AGE
-account-6b844c4f44-gdsvd          1/1     Running   0          145m
-auth-7c55b8b7b9-9r6bb             1/1     Running   0          145m
-efs-provisioner-fbcc88cb8-zrlzx   1/1     Running   0          79m
-gateway-55bd75dfb9-cwlvg          1/1     Running   0          142m
-history-77cc54b895-v5nqm          1/1     Running   0          144m
-mypage-7bc648bd4d-5psgz           1/1     Running   0          143m
-request-675f455d5c-7txbc          1/1     Running   0          28m
+NAME                         READY   STATUS    RESTARTS   AGE
+auth-76575bb66d-c286z        1/1     Running   0          18m 
+gateway-867596b974-75dxj     1/1     Running   0          167m
+manager-57f779bd4f-pn92k     1/1     Running   0          167m
+messenger-689ff46b85-svwlb   1/1     Running   0          167m
+request-69dfc9fc7f-sr4x8     1/1     Running   0          2m9s
+siege                        1/1     Running   0          5h9m
+status-5cd9db6d56-pzj5j      1/1     Running   0          167m
 ```
 
 #### 부하 테스트 진행 후 
