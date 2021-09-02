@@ -366,9 +366,14 @@ public interface LoanAuthService {
    ```
 
 3. 대출 담당자가 신청정보를 확인한다.
-
+   ```
+   http http://loanManager:8080/loanManagers
+   ```
  
 4. 대출 담당자가 신청건에 대해 심사를 시작한다. 
+   ```
+   http PATCH http://loanManager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="01" admComment=""
+   ```
 
    - 메세지 전송내역 확인
    ```
@@ -380,6 +385,9 @@ public interface LoanAuthService {
    ```
 
 5. 대출 담당자가 신청건에 대해 심사 완료 후 심사결과를 전송한다. 
+   ```
+   http PATCH http://loanManager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="02" admComment=""
+   ```
 
    - 메세지 전송내역 확인
    ```
@@ -391,6 +399,9 @@ public interface LoanAuthService {
    ```
 
 6. 대출 담당자가 대출을 실행한다. 
+   ```
+   http PATCH http://loanManager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="04" amountOfMoney="1000000" admComment=""
+   ```
    - 메세지 전송내역 확인
    ```
    http http://loanMessenger:8080/loanMessengers
@@ -401,6 +412,9 @@ public interface LoanAuthService {
    ```
 
 7. 고객이 대출 실행 여부를 최종 확인한다. 
+   ```
+   http http://loanStatus:8080/loanStatus
+   ```
 
 ## 운영
 *****
