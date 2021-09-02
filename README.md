@@ -349,71 +349,71 @@ public interface LoanAuthService {
 
 1. 고객이 대출 시스템에서 신규 대출 신청을 한다.   
    ```
-   http http://loanRequest:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+   http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
    ```
    - 메세지 전송내역 확인
    ```
-   http http://loanMessenger:8080/loanMessengers
+   http http://messenger:8080/loanMessengers
    ```
    - 대출 진행상태 확인
    ```
-   http http://loanStatus:8080/loanStatus
+   http http://status:8080/loanStatus
    ```
 
 2. 신청 정보에 대해 인증 시스템에서 개인정보를 인증한다. 
    ```
-   http http://loanAuth:8080/loanAuths
+   http http://auth:8080/loanAuths
    ```
 
 3. 대출 담당자가 신청정보를 확인한다.
    ```
-   http http://loanManager:8080/loanManagers
+   http http://manager:8080/loanManagers
    ```
  
 4. 대출 담당자가 신청건에 대해 심사를 시작한다. 
    ```
-   http PATCH http://loanManager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="01" admComment=""
+   http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="01" admComment=""
    ```
 
    - 메세지 전송내역 확인
    ```
-   http http://loanMessenger:8080/loanMessengers
+   http http://messenger:8080/loanMessengers
    ```
    - 대출 진행상태 확인
    ```
-   http http://loanStatus:8080/loanStatus
+   http http://status:8080/loanStatus
    ```
 
 5. 대출 담당자가 신청건에 대해 심사 완료 후 심사결과를 전송한다. 
    ```
-   http PATCH http://loanManager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="02" admComment=""
+   http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="02" admComment=""
    ```
 
    - 메세지 전송내역 확인
    ```
-   http http://loanMessenger:8080/loanMessengers
+   http http://messenger:8080/loanMessengers
    ```
    - 대출 진행상태 확인
    ```
-   http http://loanStatus:8080/loanStatus
+   http http://status:8080/loanStatus
    ```
 
 6. 대출 담당자가 대출을 실행한다. 
    ```
-   http PATCH http://loanManager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="04" amountOfMoney="1000000" admComment=""
+   http PATCH http://manager:8080/loanManagers/1 procId="adm@sk.com" procName="관리자" loanStatus="04" amountOfMoney="1000000" admComment=""
    ```
    - 메세지 전송내역 확인
    ```
-   http http://loanMessenger:8080/loanMessengers
+   http http://messenger:8080/loanMessengers
    ```
    - 대출 진행상태 확인
    ```
-   http http://loanStatus:8080/loanStatus
+   http http://status:8080/loanStatus
    ```
 
 7. 고객이 대출 실행 여부를 최종 확인한다. 
    ```
-   http http://loanStatus:8080/loanStatus
+   http http://status:8080/loanStatus
    ```
 
 ## 운영
