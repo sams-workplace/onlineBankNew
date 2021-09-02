@@ -1590,36 +1590,7 @@ tmpfs           1.9G     0  1.9G   0% /sys/firmware
 ```
 
 #### 생성된 Persistence Volume 이 pod 내 정상 mount 되었음을 확인할 수 있다. 
-```
-	root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
 
-	HTTP/1.1 201 
-	Content-Type: application/json;charset=UTF-8
-	Date: Thu, 02 Sep 2021 15:23:58 GMT
-	Location: http://request:8080/loanRequests/1
-	Transfer-Encoding: chunked
-
-	{
-	    "_links": {
-		"loanRequest": {
-		    "href": "http://request:8080/loanRequests/1"
-		},
-		"self": {
-		    "href": "http://request:8080/loanRequests/1"
-		}
-	    },
-	    "amountOfMoney": 100000,
-	    "loanRequestId": null,
-	    "requestDate": null,
-	    "requestId": "01",
-	    "requestName": "대출신청",
-	    "requestStatus": null,
-	    "userId": "1@sk.com",
-	    "userMobile": "010-000-0000",
-	    "userName": "유은상",
-	    "userPassword": "1234"
-	}
-```
 #### LoanRequest.java 파일내 할당된 볼륨에 로그를 기록하도록 프로그램 수정
 ```
 @PostPersist
@@ -1650,6 +1621,37 @@ tmpfs           1.9G     0  1.9G   0% /sys/firmware
                 e.printStackTrace();
             }
         }
+```
+#### Persist Volume 내 로깅여부를 확인하기 위해 Request 서비스 호출 
+```
+	root@siege:/# http http://request:8080/loanRequests requestId="01" requestName="대출신청" userId="1@sk.com" userName="유은상" userMobile="010-000-0000" userPassword="1234" amountOfMoney="100000"
+
+	HTTP/1.1 201 
+	Content-Type: application/json;charset=UTF-8
+	Date: Thu, 02 Sep 2021 15:23:58 GMT
+	Location: http://request:8080/loanRequests/1
+	Transfer-Encoding: chunked
+
+	{
+	    "_links": {
+		"loanRequest": {
+		    "href": "http://request:8080/loanRequests/1"
+		},
+		"self": {
+		    "href": "http://request:8080/loanRequests/1"
+		}
+	    },
+	    "amountOfMoney": 100000,
+	    "loanRequestId": null,
+	    "requestDate": null,
+	    "requestId": "01",
+	    "requestName": "대출신청",
+	    "requestStatus": null,
+	    "userId": "1@sk.com",
+	    "userMobile": "010-000-0000",
+	    "userName": "유은상",
+	    "userPassword": "1234"
+	}
 ```
 #### Persist Volume 내 정상 로깅됨을 확인
 ```
