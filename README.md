@@ -1154,9 +1154,7 @@ siege                        1/1     Running            0          7h55m
 status-5cd9db6d56-pzj5j      1/1     Running            0          5h33m
 ```
 
-#### 부하테스트 결과 Availability 는 100% 를 보이며 성공하였고, 늘어난 pod 개수를 통하여
-
-오토 스케일링이 정상적으로 수행되었음을 확인할 수 있다. 
+#### 부하테스트 결과 Availability 는 100% 를 보이며 성공하였고, 늘어난 pod 개수를 통하여 오토 스케일링이 정상적으로 수행되었음을 확인할 수 있다. 
 *****
 
 ### 무정지 재배포
@@ -1247,9 +1245,11 @@ Shortest transaction:           0.02
 
 #### 부하테스트 진행
 
+```
 root@siege:/# siege -v -c100 -t30S -r10 --content-type "application/json" 'http://request:8080/loanRequests POST  
 {"requestId":"01","requestName":"대출신청","userId":"1@sk.com","userName":"유은상","userMobile":"010-000-0000","userPassword":"1234","amountOfMoney":"100000"}'
 ( 동시사용자 100명, 90초간 진행 )
+```
 
 #### 부하테스트중 추가 생성한 Terminal 에서 readiness 설정 되어있는 버젼으로 재배포 한다.
 
